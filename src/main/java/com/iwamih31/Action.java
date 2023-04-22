@@ -15,21 +15,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "private")
-public class Private {
+@Table(name = "action")
+public class Action {
 
   // ID
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
-  // 部屋番号
-  @Column(name = "room", nullable = false)
-  private Integer room;
-
-  // 名前
-  @Column(name = "name", nullable = false)
-  private String name;
+  // ユーザーID
+  @Column(name = "user_id", nullable = false)
+  private Integer user_id;
 
   // 日付
   @Column(name = "date", nullable = false)

@@ -38,8 +38,7 @@ public class CareRecordController {
 			@RequestParam("id")int id,
 			@RequestParam("date")String date) {
 		System.out.println("@PostMapping(\"/User\")開始");
-		String message = "";
-		return "redirect:/CareRecord/User?id=" + id + "&date=" + date + "&message=" + message;
+		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
 	}
 
 	@GetMapping("/User")
@@ -47,7 +46,7 @@ public class CareRecordController {
 			@Param("id")int id,
 			@Param("date")String date,
 			@Param("message")String message,
-			@ModelAttribute("insert_record")Private insert_record,
+			@ModelAttribute("action")Action action,
 			Model model) {
 		System.out.println("@GetMapping(\"/User\")開始");
 		model.addAttribute("title", "常時入力");
@@ -62,6 +61,18 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/Record")
+	public String record(
+			@RequestParam("post_id")int id,
+			@RequestParam("post_date")String date,
+			RedirectAttributes redirectAttributes,
+			@ModelAttribute("action")Action action) {
+		System.out.println("record開始");
+		String message = careRecordService.recordInsert(action, id, date);
+		redirectAttributes.addFlashAttribute("message", message);
+		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
+	}
+
 	@PostMapping("/Detail")
 	public String detail(@RequestParam("id")int id, Model model) {
 		System.out.println("detail開始");
@@ -73,19 +84,9 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@PostMapping("/Record")
-	public String record(
-			@RequestParam("post_id")int id,
-			@RequestParam("post_date")String date,
-			@ModelAttribute("insert_record")Private insert_record) {
-		System.out.println("record開始");
-		String message = careRecordService.recordInsert(insert_record);
-		return "redirect:/CareRecord/User?id=" + id + "&date=" + date + "&message=" + message;
-	}
-
 	@PostMapping("/Routine")
 	public String routine(RedirectAttributes redirectAttributes, @RequestParam("id") int id) {
-		CareRecord user = careRecordService.user(id);
+		User user = careRecordService.user(id);
 		ModelMap modelMap = new ModelMap();
 		modelMap.addAttribute("user", user);
 		modelMap.addAttribute("title", user.getName());

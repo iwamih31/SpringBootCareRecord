@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CareRecordRepository extends JpaRepository<CareRecord, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
 	/**	Private情報取得 */
-	@Query("select careRecord"
-			+ " from CareRecord careRecord"
+	@Query("select user"
+			+ " from User user"
 			+ " where use = '利用中'")
-	public List<CareRecord> userList();
+	public List<User> userList();
 }

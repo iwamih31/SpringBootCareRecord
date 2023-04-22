@@ -36,4 +36,15 @@ body {
 	margin-right: 1em;
 }
 
+.bg_yellow {
+	background-color: yellow;
+}
+
+.bg_green {
+	background-color: green;
+}
+
+.bg_red {
+	background-color: red;
+}
 

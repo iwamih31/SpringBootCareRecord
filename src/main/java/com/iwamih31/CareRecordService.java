@@ -12,39 +12,41 @@ public class CareRecordService {
 
 	// リポジトリ格納の為のプライベートフィールド
 	@Autowired
-	private CareRecordRepository careRecordRepository;
+	private UserRepository userRepository;
 	@Autowired
 	private RoutineRepository routineRepository;
 	@Autowired
-	private PrivateRepository privateRepository;
+	private ActionRepository recordRepository;
 	@Autowired
 	private DetailRepository detailRepository;
 
 
-	public List<CareRecord> userList() {
-		return careRecordRepository.userList();
+	public List<User> userList() {
+		return userRepository.userList();
 	}
 
-	public CareRecord user(int id) {
-		return careRecordRepository.getReferenceById(id);
+	public User user(int id) {
+		return userRepository.getReferenceById(id);
 	}
 
-	public List<Private> records(int id, String date) {
-		CareRecord user = user(id);
-		return privateRepository.getPrivate(user.getRoom(), user.getName(), date);
+	public List<Action> records(int id, String date) {
+		return recordRepository.getRecords(id, date);
 	}
 
-	public List<Private> recordsAll() {
-		return privateRepository.findAll();
+	public List<Action> recordsAll() {
+		return recordRepository.findAll();
 	}
 
-	public String recordInsert(Private insert_record) {
+	public String recordInsert(Action record, int id, String date) {
 		System.out.println("recordInsert開始");
 		String message = "";
-		if (privateRepository.save(insert_record) == null) {
-			message = "登録に失敗しました";
-		} else {
-			message = insert_record.getTime() + " のデータを登録しました";
+		record.setUser_id(id);
+		record.setDate(date);
+		try {
+			recordRepository.save(record);
+			message = record.getTime() + " のデータを登録しました";
+		} catch (Exception e) {
+			message = "登録に失敗しました " + e.getMessage();
 		}
 		System.out.println("recordInsert終了");
 		return message;
@@ -88,9 +90,8 @@ public class CareRecordService {
 		return time.substring(0, time.length()-1) + 0;
 	}
 
-	public Private insert_record(int id, String date) {
+	public Action insert_record(int id, String date) {
 		System.out.println("insert_record開始");
-		CareRecord user = user(id);
-		return new Private(null, user.getRoom(), user.getName(),date, "", "", "", "", "", "", "", "", "", "" );
+		return new Action(1, id,date, "", "", "", "", "", "", "", "", "", "" );
 	}
 }

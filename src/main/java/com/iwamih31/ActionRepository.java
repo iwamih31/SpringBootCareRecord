@@ -9,29 +9,27 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PrivateRepository extends JpaRepository<Private, Integer> {
+public interface ActionRepository extends JpaRepository<Action, Integer> {
 
-		/**	Private情報取得 */
-		@Query("select private"
-				+ " from Private private"
-				+ " where room = :room"
-				+ " and name = :name"
+		/**	Action情報取得 */
+		@Query("select action"
+				+ " from Action action"
+				+ " where user_id = :user_id"
 				+ " and date = :date")
-		public List<Private> getPrivate(
-				@Param("room")Integer room,
-				@Param("name")String name,
+		public List<Action> getRecords(
+				@Param("user_id")Integer user_id,
 				@Param("date")String date
 			);
 
-		/**	Private情報更新	*/
+		/**	Action情報更新	*/
 		@Modifying
-		@Query("update Private"
+		@Query("update Action"
 				 + " set"
 				 + "  time = :time,"
 				 + "  sleep = :sleep"
 				 + " where"
 				 + "  id = :id")
-		public Integer updateUser(
+		public Integer updateRecord(
 				@Param("id") int id,
 				@Param("time") String time,
 				@Param("sleep") String sleep

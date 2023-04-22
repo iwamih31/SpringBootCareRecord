@@ -14,7 +14,8 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex">
-				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様 [[${message}]]</div>
+				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
+				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 				<form id="detail" method="post" th:action="@{/CareRecord/Detail}">
 					<input type="hidden" name="id" th:value="${user.id}" />
 					<button form="detail" type="submit" class="btn btn-primary button-detail">
@@ -23,9 +24,7 @@
 				</form>
 			</div>
 			<div class="flex margin_1em">
-				<button form="insert" type="submit" class="btn btn-primary parts">
-					記録
-				</button>
+
 				<form id="selectDate" method="post" th:action="@{/CareRecord/User}">
 					<label for="date">日付</label>
 					<input type="text" name="date" th:value="${date}" />
@@ -35,12 +34,9 @@
 					</button>
 				</form>
 			</div>
-			<form id="insert" method="post" th:action="@{/CareRecord/Record}" class="form_record" th:object="${insert_record}">
+			<form id="insert" method="post" th:action="@{/CareRecord/Record}" class="form_record" th:object="${action}">
 				<input type="hidden" name="post_date" th:value="${date}" />
 				<input type="hidden" name="post_id" th:value="${user.id}" />
-				<input type="hidden" th:field="*{room}" th:value="${user.room}" />
-				<input type="hidden" th:field="*{name}" th:value="${user.name}" />
-				<input type="hidden" th:field="*{date}" th:value="${date}" />
 				<table class="table table-striped table-bordered table-hover">
 					<thead class="thead-light">
 						<tr>
@@ -54,6 +50,7 @@
 							<th class="th-width">服薬</th>
 							<th class="th-width">処置</th>
 							<th class="th-width">様子</th>
+							<th class="th-width"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -118,6 +115,11 @@
 									<option th:each="option : ${options.situation}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>
+							<td>
+								<button form="insert" type="submit" class="btn btn-primary parts">
+									記録
+								</button>
+							</td>
 						</tr>
 						<tr th:each="record : ${records}">
 							<td>[[${record.time}]]</td>
@@ -130,10 +132,14 @@
 							<td>[[${record.medicine}]]</td>
 							<td>[[${record.ointment}]]</td>
 							<td>[[${record.situation}]]</td>
+							<td>
+								<button form="update" type="submit" class="btn btn-primary parts bg_green">
+									編集
+								</button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
-				<input type="hidden" name="insert_record" th:value="${insert_record}" />
 			</form>
 		</div>
 		<br>

@@ -7,13 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrivateForm {
+public class ActionForm {
 
-  // 部屋番号
+  // ユーザーID
   private Integer room;
-
-  // 名前
-  private String name;
 
   // 日付
   private String date;
