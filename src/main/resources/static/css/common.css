@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+body {
+	position: relative;
+}
+
+#main {
+	margin: auto;
+	width: 80%;
+}
+
+#header, #footer {
+	background-color: silver;
+	text-align: center;
+}
+
+.th-width {
+	border: solid;
+	text-align: center;
+}
+
+.flex_space_between {
+	display: flex;
+	justify-content:space-between;
+}
+
+.flex {
+	display: flex;
+}
+
+.margin_1em {
+	margin: 1em;
+}
+
+.parts {
+	margin-right: 1em;
+}
+
+

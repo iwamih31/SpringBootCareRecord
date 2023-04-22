@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+.form_record input {
+	width: 100%;
+}
+
+.user {
+	display: inline-flex;
+	border: solid blue thin;
+	border-radius: 0.2em;
+	font-size: 1.5em;
+	padding: 0.2em;
+	margin: 0.2em;
+}
+
+.button-detail {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}

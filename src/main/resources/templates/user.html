@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<!-- library フラグメントの定義（JavaScript／CSS） -->
+	<th:block th:fragment="library">
+		<link rel="stylesheet" th:href="@{/css/user.css}">
+	</th:block>
+
+	<!--	main フラグメントの定義（メインコンテンツ）	-->
+	<div th:fragment="main">
+		<div class="header border-bottom">
+			<h1 class="h2">常時入力</h1>
+		</div>
+		<!--	一覧表示	-->
+		<div>
+			<div class="flex">
+				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様 [[${message}]]</div>
+				<form id="detail" method="post" th:action="@{/CareRecord/Detail}">
+					<input type="hidden" name="id" th:value="${user.id}" />
+					<button form="detail" type="submit" class="btn btn-primary button-detail">
+						詳細
+					</button>
+				</form>
+			</div>
+			<div class="flex margin_1em">
+				<button form="insert" type="submit" class="btn btn-primary parts">
+					記録
+				</button>
+				<form id="selectDate" method="post" th:action="@{/CareRecord/User}">
+					<label for="date">日付</label>
+					<input type="text" name="date" th:value="${date}" />
+					<input type="hidden" name="id" th:value="${user.id}" />
+					<button form="selectDate" type="submit" class="btn btn-primary parts">
+						日付変更
+					</button>
+				</form>
+			</div>
+			<form id="insert" method="post" th:action="@{/CareRecord/Record}" class="form_record" th:object="${insert_record}">
+				<input type="hidden" name="post_date" th:value="${date}" />
+				<input type="hidden" name="post_id" th:value="${user.id}" />
+				<input type="hidden" th:field="*{room}" th:value="${user.room}" />
+				<input type="hidden" th:field="*{name}" th:value="${user.name}" />
+				<input type="hidden" th:field="*{date}" th:value="${date}" />
+				<table class="table table-striped table-bordered table-hover">
+					<thead class="thead-light">
+						<tr>
+							<th class="th-width">時間</th>
+							<th class="th-width">睡眠</th>
+							<th class="th-width">水分</th>
+							<th class="th-width">排尿1</th>
+							<th class="th-width">排尿2</th>
+							<th class="th-width">排便</th>
+							<th class="th-width">下剤</th>
+							<th class="th-width">服薬</th>
+							<th class="th-width">処置</th>
+							<th class="th-width">様子</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<select th:field="*{time}">
+									<option th:each="option : ${options.time}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{sleep}">
+									<option value=""></option>
+									<option th:each="option : ${options.sleep}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{water}">
+									<option value=""></option>
+									<option th:each="option : ${options.water}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{pee1}">
+									<option value=""></option>
+									<option th:each="option : ${options.pee1}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{pee2}">
+									<option value=""></option>
+									<option th:each="option : ${options.pee2}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{poop}">
+									<option value=""></option>
+									<option th:each="option : ${options.poop}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{laxative}">
+									<option value=""></option>
+									<option th:each="option : ${options.laxative}" th:value="${option}">[[${option}]]</option>
+									<option value="不明">不明</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{medicine}">
+									<option value=""></option>
+									<option th:each="option : ${options.medicine}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{ointment}">
+									<option value=""></option>
+									<option th:each="option : ${options.ointment}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+							<td>
+								<select th:field="*{situation}">
+									<option value=""></option>
+									<option th:each="option : ${options.situation}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
+						</tr>
+						<tr th:each="record : ${records}">
+							<td>[[${record.time}]]</td>
+							<td>[[${record.sleep}]]</td>
+							<td>[[${record.water}]]</td>
+							<td>[[${record.pee1}]]</td>
+							<td>[[${record.pee2}]]</td>
+							<td>[[${record.poop}]]</td>
+							<td>[[${record.laxative}]]</td>
+							<td>[[${record.medicine}]]</td>
+							<td>[[${record.ointment}]]</td>
+							<td>[[${record.situation}]]</td>
+						</tr>
+					</tbody>
+				</table>
+				<input type="hidden" name="insert_record" th:value="${insert_record}" />
+			</form>
+		</div>
+		<br>
+		<a th:href="@{/main}">メインページへ</a>
+	</div>
+
+</html>
