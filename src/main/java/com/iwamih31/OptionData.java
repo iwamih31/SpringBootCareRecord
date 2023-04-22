@@ -61,7 +61,7 @@ public class OptionData {
 
 	/** 現在時刻の末尾を 0 または 5 に変換し、そこから5分ずつ減らした時刻の配列を作成 */
 	private static String[] times() {
-		// 現在時刻を取得
+		// 現在日時を取得
 		LocalDateTime dateTime = LocalDateTime.now();
 		// 表示形式を指定
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -88,8 +88,19 @@ public class OptionData {
 	}
 
 	private static String[] days() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		// 現在日時を取得
+		LocalDateTime dateTime = LocalDateTime.now();
+		// 表示形式を指定
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		// 配列を作成し今日から1年前迄の日付を代入
+		String[] data = new String[366];
+		for (int i = 0; i < data.length; i++) {
+			// フォーマット
+			data[i] = dateTimeFormatter.format(dateTime);
+			// dateTimeを1日減らす
+			dateTime = dateTime.minusDays(1);
+		}
+		return data;
 	}
 
 }

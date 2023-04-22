@@ -27,7 +27,12 @@
 
 				<form id="selectDate" method="post" th:action="@{/CareRecord/User}">
 					<label for="date">日付</label>
-					<input type="text" name="date" th:value="${date}" />
+					<select name="date" >
+						<option th:each="option : ${options.date}" th:value="${option}" th:selected="${option == date}">
+							[[${option}]]
+						</option>
+					</select>
+
 					<input type="hidden" name="id" th:value="${user.id}" />
 					<button form="selectDate" type="submit" class="btn btn-primary parts">
 						日付変更
