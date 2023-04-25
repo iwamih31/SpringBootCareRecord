@@ -57,7 +57,14 @@ public class CareRecordService {
 	}
 
 	public Detail detail(int id) {
-		return detailRepository.getReferenceById(id);
+		Detail detail = null;
+		if(detailRepository.existsById(id)) {
+			detail = detailRepository.getReferenceById(id);
+		} else {
+			__consoleOut__("テーブル detail に Id(" + id + ") がありません");
+			detail = new Detail(id, "未登録", "未登録", "未登録");
+		}
+		return detail;
 	}
 
 	public List<Routine> routineList() {
@@ -94,4 +101,129 @@ public class CareRecordService {
 		System.out.println("insert_record開始");
 		return new Action(1, id,date, "", "", "", "", "", "", "", "", "", "" );
 	}
+
+	public void __consoleOut__(String message) {
+		System.out.println("");
+		System.out.println(message);
+		System.out.println("");
+	}
+
+	public Integer[] dateOptions(int count, String input) {
+		Integer[] options = null;
+		switch(count) {
+			case 1:
+				options = OptionData.years(today(), 1900, -1);
+				break;
+			case 2:
+				options = OptionData.month();
+				break;
+			case 3:
+				options = OptionData.days(input);
+				break;
+		}
+		return options;
+	}
+
+	public String dateString(int count) {
+
+		switch(count) {
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+		}
+		return null;
+	}
+
+	public String dateInputUrl(int count) {
+		String dateInputUrl = "/CareRecord/Birthday";
+		if (count == 3) dateInputUrl = "/CareRecord/BirthdayUpdate";
+		return dateInputUrl;
+	}
+
+	public String dateInputLabel(int count) {
+		String data = null;
+		switch(count) {
+			case 1:
+				data = "年";
+				break;
+			case 2:
+				data = "月";
+				break;
+			case 3:
+				data = "日にち";
+				break;
+		}
+		return "生まれた" + data + "を入力して下さい";
+	}
+
+	/** 年、月、日の順番で受け取ったそれぞれの数字の桁を合わせ/で繋げる */
+	public String dateStringConnect(int count, String string, String input) {
+		String delimiter = "/";
+		int word_count = 2;
+		switch(count) {
+			case 1:
+				delimiter = "";
+				word_count = 0;
+				break;
+			case 2:
+				delimiter = "";
+				word_count = 4;
+				break;
+		}
+		// 文字数が word_count になる様に input の前を "0" で埋める
+		input = stringAlignment(input, word_count, "0");
+		// delimiter で連結し返す
+		return string + delimiter + input;
+	}
+
+	/** 文字数が word_count になる様に object の前を fill で埋める */
+	public static String stringAlignment(Object object, int word_count , String fill) {
+		// fill を word_count の数だけ繋げる
+		String fills = "";
+		for (int i = 0; i < word_count; i++) {
+			fills += fill;
+		}
+		// object の先頭に fills を付け 文字列変数 alignmentString に代入
+		String alignmentString = (fills + object);
+		//alignmentString の末尾から word_count の数だけ文字を抜き出し 自身に代入
+		alignmentString = alignmentString.substring(alignmentString.length() - word_count);
+		return alignmentString;
+	}
+
+	/** 配列の中身を同じ文字数に揃える */
+	public static String[] arrayAlignment(Object[] array, int word_count , String fill) {
+		// fill を word_count の数だけ繋げる
+		String fills = "";
+		for (int i = 0; i < word_count; i++) {
+			fills += fill;
+		}
+		// Object[] array と同じ length の String 配列 alignmentArray を作成
+		String[] alignmentArray = new String[array.length];
+		for (int i = 0; i < alignmentArray.length; i++) {
+			// 先頭に fills を付ける
+			String string = (fills + array[i]);
+			//末尾から word_count の数だけ文字を抜き出し alignmentArray[i] に代入
+			alignmentArray[i] = string.substring(string.length() - word_count);
+		}
+		return alignmentArray;
+	}
+
+	public void birthdayUpdate(int id, String string, String input) {
+		// 文字数が 2 になる様に input の前を "0" で埋める
+		input = stringAlignment(input, 2, "0");
+		String birthday = string + "/" + input;
+		__consoleOut__("birthday = " + birthday);
+		Detail detail;
+		if (detailRepository.existsById(id)) {
+			detail = detailRepository.getReferenceById(id);
+			detail.setBirthday(birthday);
+		} else {
+			detail = new Detail(id, birthday, "", "");
+		}
+		detailRepository.save(detail);
+	}
+
 }

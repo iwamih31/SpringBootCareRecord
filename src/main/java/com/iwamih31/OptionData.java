@@ -12,7 +12,7 @@ public class OptionData {
   public static String[] name = names();
 
   // 日付
-  public static String[] date = days();
+  public static String[] date = dates();
 
   // 時間
   public static String[] time = times();
@@ -46,7 +46,7 @@ public class OptionData {
 
 
   /** start から end まで add ずつ増やした数を代入した配列を作成 */
-	private static Integer[] nums(int start, int end, int add) {
+  public static Integer[] nums(int start, int end, int add) {
 		Integer[] nums = new Integer[(end - start) / add + 1];
 		for (int i = 0; i < nums.length; i++) {
 			nums[i] = i * add + start;
@@ -54,13 +54,13 @@ public class OptionData {
 		return nums;
 	}
 
-	private static String[] names() {
+	public static String[] names() {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	/** 現在時刻の末尾を 0 または 5 に変換し、そこから5分ずつ減らした時刻の配列を作成 */
-	private static String[] times() {
+	public static String[] times() {
 		// 現在日時を取得
 		LocalDateTime dateTime = LocalDateTime.now();
 		// 表示形式を指定
@@ -87,7 +87,7 @@ public class OptionData {
 		return times;
 	}
 
-	private static String[] days() {
+	public static String[] dates() {
 		// 現在日時を取得
 		LocalDateTime dateTime = LocalDateTime.now();
 		// 表示形式を指定
@@ -101,6 +101,54 @@ public class OptionData {
 			dateTime = dateTime.minusDays(1);
 		}
 		return data;
+	}
+
+	public static Integer[] days(String month) {
+		int lastDay = 31;
+		switch(month) {
+			case "2":
+				lastDay = 29;
+				break;
+			case "4":
+			case "6":
+			case "9":
+			case "11":
+				lastDay = 30;
+				break;
+		}
+		Integer[] days = nums(1, lastDay, 1);
+		return days;
+	}
+
+	public static Integer[] month() {
+		// 1から12の配列を作成
+		Integer[] month = nums(1, 12, 1);
+		return month;
+	}
+
+  /** String date の年数部分から end までを代入した配列を作成 */
+	public static Integer[] years(String date, int end, int add) {
+		int year = Integer.parseInt(date.split("/")[0]);
+		Integer[] years = nums(year, end, add);
+		return years;
+	}
+
+	/** 配列の中身を同じ文字数に揃える */
+	public static String[] arrayAlignment(Object[] array, int word_count , String fill) {
+		// fill を word_count の数だけ繋げる
+		String fills = "";
+		for (int i = 0; i < word_count; i++) {
+			fills += fill;
+		}
+		// Object[] array と同じ length の String 配列 alignmentArray を作成
+		String[] alignmentArray = new String[array.length];
+		for (int i = 0; i < alignmentArray.length; i++) {
+			// 先頭に fills を付ける
+			String string = (fills + array[i]);
+			//末尾から word_count の数だけ文字を抜き出し alignmentArray[i] に代入
+			alignmentArray[i] = string.substring(string.length() - word_count);
+		}
+		return alignmentArray;
 	}
 
 }

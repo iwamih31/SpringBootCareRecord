@@ -24,7 +24,7 @@ public class CareRecordController {
 
 	@GetMapping("/UserList")
 	public String userList(Model model) {
-		System.out.println("@GetMapping(\"/UserList\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
 		model.addAttribute("title", "利用者一覧表");
 		model.addAttribute("date", careRecordService.today());
 		model.addAttribute("userList", careRecordService.userList());
@@ -37,7 +37,7 @@ public class CareRecordController {
 	public String user(
 			@RequestParam("id")int id,
 			@RequestParam("date")String date) {
-		System.out.println("@PostMapping(\"/User\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/User\")開始");
 		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
 	}
 
@@ -48,7 +48,7 @@ public class CareRecordController {
 			@Param("message")String message,
 			@ModelAttribute("action")Action action,
 			Model model) {
-		System.out.println("@GetMapping(\"/User\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/User\")開始");
 		model.addAttribute("title", "常時入力");
 		model.addAttribute("date", date);
 		model.addAttribute("user", careRecordService.user(id));
@@ -57,7 +57,7 @@ public class CareRecordController {
 		model.addAttribute("message", message);
 		model.addAttribute("library", "user::library");
 		model.addAttribute("main", "user::main");
-		System.out.println("@GetMapping(\"/User\")終了");
+		careRecordService.__consoleOut__("@GetMapping(\"/User\")終了");
 		return "view";
 	}
 
@@ -74,13 +74,19 @@ public class CareRecordController {
 	}
 
 	@PostMapping("/Detail")
-	public String detail(@RequestParam("id")int id, Model model) {
-		System.out.println("detail開始");
+	public String detail(@RequestParam("id")int id) {
+		return "redirect:/CareRecord/Detail?id=" + id;
+	}
+
+	@GetMapping("/Detail")
+	public String detail(@Param("id")int id, Model model) {
+		careRecordService.__consoleOut__("detail開始");
 		model.addAttribute("title", "詳細情報");
 		model.addAttribute("user", careRecordService.user(id));
 		model.addAttribute("detail", careRecordService.detail(id));
 		model.addAttribute("library", "detail::library");
 		model.addAttribute("main", "detail::main");
+		careRecordService.__consoleOut__("detail終了");
 		return "view";
 	}
 
@@ -101,5 +107,59 @@ public class CareRecordController {
 		model.addAttribute("library", "routineList::library");
 		model.addAttribute("main", "routineList::main");
 		return "view";
+	}
+
+	@PostMapping("/DetailUpdate")
+	public String detailUpdate(
+			@RequestParam("id")int id) {
+		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
+		String string = "";
+		String input = "";
+		return "redirect:/CareRecord/Birthday?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
+	}
+
+	@PostMapping("/Birthday")
+	public String birthday(
+			@RequestParam("id")int id,
+			@RequestParam("count")int count,
+			@RequestParam("string")String string,
+			@RequestParam("input")String input) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Birthday\")開始");
+		return "redirect:/CareRecord/Birthday?id=" + id + "&count=" + count + "&string=" + string + "&input=" + input;
+	}
+
+	@GetMapping("/Birthday")
+	public String birthday(
+			@Param("id")int id,
+			@Param("count")int count,
+			@Param("string")String string,
+			@Param("input")String input,
+			Model model) {
+		careRecordService.__consoleOut__("birthday" + count + "開始");
+		careRecordService.__consoleOut__("string = " + careRecordService.dateStringConnect(count, string, input));
+		careRecordService.__consoleOut__("url = " + careRecordService.dateInputUrl(count));
+		model.addAttribute("title", "入力");
+		model.addAttribute("user", careRecordService.user(id));
+		model.addAttribute("count", count + 1);
+		model.addAttribute("label", careRecordService.dateInputLabel(count));
+		model.addAttribute("string", careRecordService.dateStringConnect(count, string, input));
+		model.addAttribute("options", careRecordService.dateOptions(count, input));
+		model.addAttribute("url", careRecordService.dateInputUrl(count));
+		model.addAttribute("library", "input::library");
+		model.addAttribute("main", "input::main");
+		careRecordService.__consoleOut__("birthday" + count + "終了");
+		return "view";
+	}
+
+	@PostMapping("/BirthdayUpdate")
+	public String birthdayUpdate(
+			@RequestParam("id")int id,
+			@RequestParam("count")int count,
+			@RequestParam("string")String string,
+			@RequestParam("input")String input) {
+		careRecordService.__consoleOut__("@PostMapping(\"/BirthdayUpdate\")開始");
+		careRecordService.__consoleOut__("count = " + count);
+		careRecordService.birthdayUpdate(id, string, input);
+		return "redirect:/CareRecord/Detail?id=" + id;
 	}
 }
