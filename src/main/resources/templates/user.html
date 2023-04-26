@@ -15,16 +15,15 @@
 		<div>
 			<div class="flex">
 				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
-				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 				<form id="detail" method="post" th:action="@{/CareRecord/Detail}">
 					<input type="hidden" name="id" th:value="${user.id}" />
 					<button form="detail" type="submit" class="btn btn-primary button-detail">
 						詳細
 					</button>
 				</form>
+				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
 			<div class="flex margin_1em">
-
 				<form id="selectDate" method="post" th:action="@{/CareRecord/User}">
 					<label for="date">日付</label>
 					<select name="date" >
@@ -32,7 +31,6 @@
 							[[${option}]]
 						</option>
 					</select>
-
 					<input type="hidden" name="id" th:value="${user.id}" />
 					<button form="selectDate" type="submit" class="btn btn-primary parts">
 						日付変更

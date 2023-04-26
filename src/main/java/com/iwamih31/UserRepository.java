@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 			+ " from User user"
 			+ " where use = '利用中'")
 	public List<User> userList();
+
 }

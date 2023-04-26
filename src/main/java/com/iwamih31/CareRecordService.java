@@ -19,6 +19,8 @@ public class CareRecordService {
 	private ActionRepository recordRepository;
 	@Autowired
 	private DetailRepository detailRepository;
+	@Autowired
+	private ToDoRepository toDoRepository;
 
 
 	public List<User> userList() {
@@ -67,8 +69,12 @@ public class CareRecordService {
 		return detail;
 	}
 
-	public List<Routine> routineList() {
-		return routineRepository.findAll();
+	public List<Routine> routineList(String date) {
+		return routineRepository.routineList(date);
+	}
+
+	public Routine routine(int id) {
+		return routineRepository.getReferenceById(id);
 	}
 
 	public String now() {
@@ -224,6 +230,19 @@ public class CareRecordService {
 			detail = new Detail(id, birthday, "", "");
 		}
 		detailRepository.save(detail);
+	}
+
+	public String[] names() {
+		List<User> users = userRepository.findAll();
+		String[] names = new String[users.size()];
+		for (int i = 0; i < names.length; i++) {
+			names[i] = users.get(i).getName();
+		}
+		return names;
+	}
+
+	public Object todoList() {
+		return toDoRepository.findAll();
 	}
 
 }

@@ -15,35 +15,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "routine")
-public class Routine {
+@Table(name = "todo")
+public class ToDo {
 
   // ID
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
-  // 日付
-  @Column(name = "date", nullable = false)
-  private String date;
-
   // 時間
   @Column(name = "time", nullable = false)
-  private String time;
-
-  // 予定
-  @Column(name = "todo", nullable = false)
-  private String todo;
-
-  // 部屋番号
-  @Column(name = "room", nullable = false)
-  private Integer room;
-
-  // 名前
-  @Column(name = "name", nullable = false)
-  private String name;
+  private String room;
 
   // 行動
   @Column(name = "action", nullable = false)
-  private String action;
+  private String name;
+
+  // 内容
+  @Column(name = "content", nullable = false)
+  private String use;
 }

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +44,6 @@ public class CareRecordController {
 	public String user(
 			@Param("id")int id,
 			@Param("date")String date,
-			@Param("message")String message,
 			@ModelAttribute("action")Action action,
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")開始");
@@ -54,7 +52,6 @@ public class CareRecordController {
 		model.addAttribute("user", careRecordService.user(id));
 		model.addAttribute("records", careRecordService.records(id, date));
 		model.addAttribute("options", careRecordService.options());
-		model.addAttribute("message", message);
 		model.addAttribute("library", "user::library");
 		model.addAttribute("main", "user::main");
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")終了");
@@ -90,22 +87,67 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/RoutineList")
+	public String routineList(@RequestParam("date") String date) {
+		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
+		return "redirect:/CareRecord/RoutineList?date=" + date;
+	}
+
+	@GetMapping("/RoutineList")
+	public String routineList(@Param("date")String date, Model model) {
+		model.addAttribute("title", "定期入力");
+		model.addAttribute("date", date);
+		model.addAttribute("routineList", careRecordService.routineList(date));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", "routineList::library");
+		model.addAttribute("main", "routineList::main");
+		return "view";
+	}
+
 	@PostMapping("/Routine")
-	public String routine(RedirectAttributes redirectAttributes, @RequestParam("id") int id) {
-		User user = careRecordService.user(id);
-		ModelMap modelMap = new ModelMap();
-		modelMap.addAttribute("user", user);
-		modelMap.addAttribute("title", user.getName());
-		redirectAttributes.addFlashAttribute("model", modelMap);
-		return "redirect:/CareRecord/User";
+	public String routine(
+			@RequestParam("id")int id,
+			@RequestParam("date")String date) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine\")開始");
+		return "redirect:/CareRecord/Routine?id=" + id + "&date=" + date;
 	}
 
 	@GetMapping("/Routine")
-	public String routine(Model model) {
-		model.addAttribute("title", "定期入力");
-		model.addAttribute("routineList", careRecordService.routineList());
-		model.addAttribute("library", "routineList::library");
-		model.addAttribute("main", "routineList::main");
+	public String routine(
+			@Param("id")int id,
+			@Param("date")String date,
+			@ModelAttribute("action")Action action,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")開始");
+		model.addAttribute("title", "定時入力データ編集");
+		model.addAttribute("date", date);
+		model.addAttribute("routine", careRecordService.routine(id));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("names", careRecordService.names());
+		model.addAttribute("library", "routine::library");
+		model.addAttribute("main", "routine::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")終了");
+		return "view";
+	}
+
+	@GetMapping("/Setting")
+	public String setting(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
+		model.addAttribute("title", "設定");
+		model.addAttribute("library", "setting::library");
+		model.addAttribute("main", "setting::main");
+		return "view";
+	}
+
+	@GetMapping("/ToDoEntry")
+	public String todoEntry(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
+		model.addAttribute("title", "設定");
+		model.addAttribute("todo", new ToDo());
+		model.addAttribute("todo_list", careRecordService.todoList());
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", "todoEntry::library");
+		model.addAttribute("main", "todoEntry::main");
 		return "view";
 	}
 
@@ -162,4 +204,5 @@ public class CareRecordController {
 		careRecordService.birthdayUpdate(id, string, input);
 		return "redirect:/CareRecord/Detail?id=" + id;
 	}
+
 }
