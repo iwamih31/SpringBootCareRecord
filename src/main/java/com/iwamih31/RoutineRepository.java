@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoutineRepository extends JpaRepository<Routine, Integer> {
 
-	/**	Action情報取得 */
+	/**	routine情報取得 */
 	@Query("select routine"
 			+ " from Routine routine"
 			+ " where date = :date"
-			+ " order by action.time desc")
+			+ " order by routine.time asc")
 	List<Routine> routineList(String date);
 }

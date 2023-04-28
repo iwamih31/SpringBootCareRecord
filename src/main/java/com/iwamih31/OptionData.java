@@ -44,7 +44,7 @@ public class OptionData {
   // 様子
   public static String[] situation = {"特変なし", "要確認！"};
 
-  // 様子
+  // ToDo
   public static String[] todo = todo();
 
 

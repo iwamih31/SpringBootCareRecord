@@ -16,7 +16,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 				+ " from Action action"
 				+ " where user_id = :user_id"
 				+ " and date = :date"
-				+ " order by action.time desc")
+				+ " order by action.time asc")
 		public List<Action> getRecords(
 				@Param("user_id")Integer user_id,
 				@Param("date")String date

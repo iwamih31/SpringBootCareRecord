@@ -32,6 +32,10 @@ body {
 	margin: 1em;
 }
 
+.padding_0 {
+	padding: 0px;
+}
+
 .parts {
 	margin-right: 1em;
 }

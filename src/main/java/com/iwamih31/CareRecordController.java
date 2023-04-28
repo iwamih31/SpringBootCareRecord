@@ -87,6 +87,15 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/DetailUpdate")
+	public String detailUpdate(
+			@RequestParam("id")int id) {
+		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
+		String string = "";
+		String input = "";
+		return "redirect:/CareRecord/Birthday?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
+	}
+
 	@PostMapping("/RoutineList")
 	public String routineList(@RequestParam("date") String date) {
 		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
@@ -95,6 +104,8 @@ public class CareRecordController {
 
 	@GetMapping("/RoutineList")
 	public String routineList(@Param("date")String date, Model model) {
+		if(date == null) date = careRecordService.today();
+		careRecordService.setRoutineList(date);
 		model.addAttribute("title", "定期入力");
 		model.addAttribute("date", date);
 		model.addAttribute("routineList", careRecordService.routineList(date));
@@ -139,6 +150,14 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/ToDoUpdate")
+	public String todoUpdate(
+			@ModelAttribute("todo")ToDo todo) {
+		careRecordService.__consoleOut__("@PostMapping(\"/ToDoUpdate\")開始");
+		careRecordService.todoSave(todo);
+		return "redirect:/CareRecord/ToDoEntry";
+	}
+
 	@GetMapping("/ToDoEntry")
 	public String todoEntry(Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
@@ -149,15 +168,6 @@ public class CareRecordController {
 		model.addAttribute("library", "todoEntry::library");
 		model.addAttribute("main", "todoEntry::main");
 		return "view";
-	}
-
-	@PostMapping("/DetailUpdate")
-	public String detailUpdate(
-			@RequestParam("id")int id) {
-		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
-		String string = "";
-		String input = "";
-		return "redirect:/CareRecord/Birthday?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
 	}
 
 	@PostMapping("/Birthday")

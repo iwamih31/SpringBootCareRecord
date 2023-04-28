@@ -12,7 +12,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	/**	Private情報取得 */
 	@Query("select user"
 			+ " from User user"
-			+ " where use = '利用中'")
+			+ " where use = '利用中'"
+			+ " order by user.room asc")
 	public List<User> userList();
 
 }

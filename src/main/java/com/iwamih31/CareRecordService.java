@@ -54,6 +54,11 @@ public class CareRecordService {
 		return message;
 	}
 
+	public Action insert_record(int id, String date) {
+		System.out.println("insert_record開始");
+		return new Action(1, id,date, "", "", "", "", "", "", "", "", "", "" );
+	}
+
 	public OptionData options() {
 		return new OptionData();
 	}
@@ -71,6 +76,10 @@ public class CareRecordService {
 
 	public List<Routine> routineList(String date) {
 		return routineRepository.routineList(date);
+	}
+
+	public List<Routine> routineAll() {
+		return routineRepository.findAll();
 	}
 
 	public Routine routine(int id) {
@@ -101,17 +110,6 @@ public class CareRecordService {
 		String time = dateTimeFormatter.format(now);
 		//末尾を0に変換して返す
 		return time.substring(0, time.length()-1) + 0;
-	}
-
-	public Action insert_record(int id, String date) {
-		System.out.println("insert_record開始");
-		return new Action(1, id,date, "", "", "", "", "", "", "", "", "", "" );
-	}
-
-	public void __consoleOut__(String message) {
-		System.out.println("");
-		System.out.println(message);
-		System.out.println("");
 	}
 
 	public Integer[] dateOptions(int count, String input) {
@@ -232,6 +230,11 @@ public class CareRecordService {
 		detailRepository.save(detail);
 	}
 
+	public void todoSave(ToDo todo) {
+		toDoRepository.save(todo);
+
+	}
+
 	public String[] names() {
 		List<User> users = userRepository.findAll();
 		String[] names = new String[users.size()];
@@ -241,8 +244,44 @@ public class CareRecordService {
 		return names;
 	}
 
-	public Object todoList() {
+	public  List<ToDo> todoList() {
 		return toDoRepository.findAll();
+	}
+
+	public void setRoutineList(String date) {
+		List<Routine> routineList = routineList(date);
+		if (routineList.size() == 0) {
+			List<ToDo> todoList = todoList();
+			for (ToDo todo : todoList) {
+				List<User> userList = userList();
+				for (User user : userList) {
+					List<Routine> routineAll = routineAll();
+					int lastRoutineID = 0;
+					if (routineAll.size() > 0) {
+						int lastRoutineNum = routineAll.size() - 1;
+						lastRoutineID = routineAll.get(lastRoutineNum).getId();
+					}
+					int insertID = lastRoutineID + 1;
+					__consoleOut__("insertID = " + insertID);
+					Routine routine = new Routine(
+							lastRoutineID + 1,
+							date,
+							todo.getTime(),
+							todo.getAction(),
+							user.getRoom(),
+							user.getName(),
+							"");
+					routineRepository.save(routine);
+				}
+			}
+		}
+
+	}
+
+	public void __consoleOut__(String message) {
+		System.out.println("");
+		System.out.println(message);
+		System.out.println("");
 	}
 
 }

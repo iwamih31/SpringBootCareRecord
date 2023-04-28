@@ -25,13 +25,13 @@ public class ToDo {
 
   // 時間
   @Column(name = "time", nullable = false)
-  private String room;
+  private String time;
 
   // 行動
   @Column(name = "action", nullable = false)
-  private String name;
+  private String action;
 
   // 内容
   @Column(name = "content", nullable = false)
-  private String use;
+  private String content;
 }
