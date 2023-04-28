@@ -44,9 +44,6 @@ public class OptionData {
   // 様子
   public static String[] situation = {"特変なし", "要確認！"};
 
-  // ToDo
-  public static String[] todo = todo();
-
 
   /** start から end まで add ずつ増やした数を代入した配列を作成 */
   public static Integer[] nums(int start, int end, int add) {
@@ -55,11 +52,6 @@ public class OptionData {
 			nums[i] = i * add + start;
 		}
 		return nums;
-	}
-
-	private static String[] todo() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
 	}
 
 	public static String[] names() {

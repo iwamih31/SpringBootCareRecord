@@ -2,6 +2,7 @@ package com.iwamih31;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class CareRecordService {
 		return recordRepository.findAll();
 	}
 
-	public String recordInsert(Action record, int id, String date) {
+	public String record_Insert(Action record, int id, String date) {
 		System.out.println("recordInsert開始");
 		String message = "";
 		record.setUser_id(id);
@@ -282,6 +283,26 @@ public class CareRecordService {
 		System.out.println("");
 		System.out.println(message);
 		System.out.println("");
+	}
+
+	public String routineUpdate(Routine routine, int id) {
+		routine.setId(id);
+		List<Routine>routineList = new ArrayList<Routine>();
+		routineList.add(routine);
+		System.out.println("routineUpdate開始");
+		String message = "";
+		try {
+			routineRepository.saveAll(routineList);
+			message = "ID = " + routine.getId() + " のデータを更新しました";
+		} catch (Exception e) {
+			message = "登録に失敗しました " + e.getMessage();
+		}
+		System.out.println("routineUpdate終了");
+		return message;
+	}
+
+	public String[] todoNames() {
+		return toDoRepository.todoNames();
 	}
 
 }

@@ -27,7 +27,7 @@
 				</form>
 				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
-			<table class="table table-striped table-bordered table-hover">
+			<table class="table table-striped table-bordered table-hover table-clickable">
 				<thead class="thead-light">
 					<tr>
 						<th class="th-width">時間</th>
@@ -35,22 +35,52 @@
 						<th class="th-width">部屋番号</th>
 						<th class="th-width">名前</th>
 						<th class="th-width">内容</th>
-						<th class="th-width"></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="routine : ${routineList}">
-						<td>[[${routine.time}]]</td>
-						<td>[[${routine.todo}]]</td>
-						<td>[[${routine.room}]]</td>
-						<td>[[${routine.name}]]</td>
-						<td>[[${routine.action}]]</td>
 						<td>
 							<form th:action="@{/CareRecord/Routine}" method="post">
 								<input type="hidden" name="id" th:value="${routine.id}" />
 								<input type="hidden" name="date" th:value="${date}" />
-								<button class="btn btn-primary" type="submit" name="select">
-									変更
+								<button class="btn btn-primary" type="submit">
+									[[${routine.time}]]
+								</button>
+							</form>
+						</td>
+						<td>
+							<form th:action="@{/CareRecord/Routine}" method="post">
+								<input type="hidden" name="id" th:value="${routine.id}" />
+								<input type="hidden" name="date" th:value="${date}" />
+								<button class="btn btn-primary" type="submit">
+									[[${routine.todo}]]
+								</button>
+							</form>
+						</td>
+						<td>
+							<form th:action="@{/CareRecord/Routine}" method="post">
+								<input type="hidden" name="id" th:value="${routine.id}" />
+								<input type="hidden" name="date" th:value="${date}" />
+								<button class="btn btn-primary" type="submit">
+									[[${routine.room}]]
+								</button>
+							</form>
+						</td>
+						<td>
+							<form th:action="@{/CareRecord/Routine}" method="post">
+								<input type="hidden" name="id" th:value="${routine.id}" />
+								<input type="hidden" name="date" th:value="${date}" />
+								<button class="btn btn-primary" type="submit">
+									[[${routine.name}]]
+								</button>
+							</form>
+						</td>
+						<td>
+							<form th:action="@{/CareRecord/Routine}" method="post">
+								<input type="hidden" name="id" th:value="${routine.id}" />
+								<input type="hidden" name="date" th:value="${date}" />
+								<button class="btn btn-primary" type="submit">
+									[[${routine.action}]]
 								</button>
 							</form>
 						</td>

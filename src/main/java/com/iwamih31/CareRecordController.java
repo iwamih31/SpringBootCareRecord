@@ -65,7 +65,7 @@ public class CareRecordController {
 			RedirectAttributes redirectAttributes,
 			@ModelAttribute("action")Action action) {
 		System.out.println("record開始");
-		String message = careRecordService.recordInsert(action, id, date);
+		String message = careRecordService.record_Insert(action, id, date);
 		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
 	}
@@ -97,7 +97,7 @@ public class CareRecordController {
 	}
 
 	@PostMapping("/RoutineList")
-	public String routineList(@RequestParam("date") String date) {
+	public String routineList(@RequestParam("date")String date) {
 		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
 		return "redirect:/CareRecord/RoutineList?date=" + date;
 	}
@@ -115,6 +115,42 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/RoutineClicked")
+	public String routineClicked(@RequestParam("id")int id,@RequestParam("date")String date) {
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineClicked\")開始");
+		return "redirect:/CareRecord/RoutineClicked?id=" + id + "&date=" + date;
+	}
+
+	@GetMapping("/RoutineClicked")
+	public String routineClicked(
+			@Param("id")int id,
+			@Param("date")String date,
+			@ModelAttribute("routine")Routine routine,
+			Model model) {
+		if(date == null) date = careRecordService.today();
+		careRecordService.setRoutineList(date);
+		model.addAttribute("title", "定期入力");
+		model.addAttribute("id", id);
+		model.addAttribute("date", date);
+		model.addAttribute("routineList", careRecordService.routineList(date));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", "routineClicked::library");
+		model.addAttribute("main", "routineClicked::main");
+		return "view";
+	}
+
+	@PostMapping("/RoutineUpdate")
+	public String routineUpdate(
+			@RequestParam("post_id")int id,
+			@RequestParam("post_date")String date,
+			@ModelAttribute("routine")Routine routine,
+			RedirectAttributes redirectAttributes) {
+		System.out.println("record開始");
+		String message = careRecordService.routineUpdate(routine, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		return "redirect:/CareRecord/RoutineList?date=" + date;
+	}
+
 	@PostMapping("/Routine")
 	public String routine(
 			@RequestParam("id")int id,
@@ -127,14 +163,15 @@ public class CareRecordController {
 	public String routine(
 			@Param("id")int id,
 			@Param("date")String date,
-			@ModelAttribute("action")Action action,
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")開始");
 		model.addAttribute("title", "定時入力データ編集");
+		model.addAttribute("id", id);
 		model.addAttribute("date", date);
 		model.addAttribute("routine", careRecordService.routine(id));
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("names", careRecordService.names());
+		model.addAttribute("todoNames", careRecordService.todoNames());
 		model.addAttribute("library", "routine::library");
 		model.addAttribute("main", "routine::main");
 		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")終了");

@@ -113,10 +113,7 @@
 								</select>
 							</td>
 							<td>
-								<select th:field="*{situation}">
-									<option value=""></option>
-									<option th:each="option : ${options.situation}" th:value="${option}">[[${option}]]</option>
-								</select>
+								<input type="text" th:field="*{situation}"/>
 							</td>
 							<td>
 								<button form="insert" type="submit" class="btn btn-primary parts">
