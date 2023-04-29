@@ -18,7 +18,7 @@
 				<form id="detail" method="post" th:action="@{/CareRecord/Detail}">
 					<input type="hidden" name="id" th:value="${user.id}" />
 					<button form="detail" type="submit" class="btn btn-primary button-detail">
-						詳細
+						詳細情報
 					</button>
 				</form>
 				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>

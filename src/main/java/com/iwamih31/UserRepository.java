@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	/**	Private情報取得 */
+	/**	利用者情報取得 */
 	@Query("select user"
 			+ " from User user"
 			+ " where use = '利用中'"

@@ -32,11 +32,15 @@ body {
 	margin: 1em;
 }
 
+.text-align-center {
+	 text-align: center;
+}
+
 .table-clickable td {
 	padding: 0px;
 }
 
-.table-clickable button {
+.table-clickable button, .table-detail input {
 	border: none;
 	color: inherit;
 	background-color: transparent;

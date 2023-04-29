@@ -32,6 +32,33 @@ public class CareRecordService {
 		return userRepository.getReferenceById(id);
 	}
 
+	public String User_Insert(User user, int id) {
+		System.out.println("recordInsert開始");
+		String message = "ID" + user.getId() + " のデータ";
+		user.setId(id);
+		List<User>userList = new ArrayList<User>();
+		userList.add(user);
+		try {
+			userRepository.saveAllAndFlush(userList);
+			message += " を登録しました";
+		} catch (Exception e) {
+			message += "登録に失敗しました " + e.getMessage();
+		}
+		System.out.println("recordInsert終了");
+		return message;
+	}
+
+	public int nextUserID() {
+		List<User> userList = userRepository.findAll();
+		int userListSize = userList.size();
+		int lastId = 0;
+		if (userList.size() > 0) {
+			lastId = userList.get(userListSize - 1).getId();
+		}
+		__consoleOut__("lastId = " + lastId);
+		return lastId + 1;
+	}
+
 	public List<Action> records(int id, String date) {
 		return recordRepository.getRecords(id, date);
 	}
@@ -70,9 +97,25 @@ public class CareRecordService {
 			detail = detailRepository.getReferenceById(id);
 		} else {
 			__consoleOut__("テーブル detail に Id(" + id + ") がありません");
-			detail = new Detail(id, "未登録", "未登録", "未登録");
+			detail = new Detail(id, "", "", "");
 		}
 		return detail;
+	}
+
+	public String detailUpdate(Detail detail, int id) {
+		detail.setId(id);
+		List<Detail>detailList = new ArrayList<Detail>();
+		detailList.add(detail);
+		System.out.println("detailUpdate開始");
+		String message = "";
+		try {
+			detailRepository.saveAll(detailList);
+			message = "ID = " + detail.getId() + " のデータを更新しました";
+		} catch (Exception e) {
+			message = "登録に失敗しました " + e.getMessage();
+		}
+		System.out.println("routineUpdate終了");
+		return message;
 	}
 
 	public List<Routine> routineList(String date) {
@@ -303,6 +346,25 @@ public class CareRecordService {
 
 	public String[] todoNames() {
 		return toDoRepository.todoNames();
+	}
+
+	public List<Integer> blankRooms() {
+		List<Integer> blankRooms = new ArrayList<Integer>();
+		List<User> userList = userRepository.userList();
+		Integer[] roomNumbers = OptionData.room;
+		for (Integer roomNumber : roomNumbers) {
+			boolean isUse = false;
+			for (User user : userList) {
+				if(roomNumber == user.getRoom()) isUse = true;
+			}
+			if (isUse == false) blankRooms.add(roomNumber);
+		}
+		return blankRooms;
+	}
+
+	public User newUser() {
+		User newUser = new User(nextUserID(),0, "","" );
+		return newUser;
 	}
 
 }

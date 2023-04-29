@@ -44,6 +44,8 @@ public class OptionData {
   // 様子
   public static String[] situation = {"特変なし", "要確認！"};
 
+  // 利用状況
+  public static String[] use = {"利用中", "利用終了"};
 
   /** start から end まで add ずつ増やした数を代入した配列を作成 */
   public static Integer[] nums(int start, int end, int add) {

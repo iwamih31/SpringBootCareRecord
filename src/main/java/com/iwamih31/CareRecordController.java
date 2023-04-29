@@ -32,11 +32,22 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@GetMapping("/UserEntry")
+	public String userEntry(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserEntry\")開始");
+		model.addAttribute("title", "利用者登録画面");
+		model.addAttribute("userList", careRecordService.userList());
+		model.addAttribute("library", "userEntry::library");
+		model.addAttribute("main", "userEntry::main");
+		return "view";
+	}
+
 	@PostMapping("/User")
 	public String user(
 			@RequestParam("id")int id,
 			@RequestParam("date")String date) {
 		careRecordService.__consoleOut__("@PostMapping(\"/User\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/User\")終了");
 		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
 	}
 
@@ -56,6 +67,32 @@ public class CareRecordController {
 		model.addAttribute("main", "user::main");
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")終了");
 		return "view";
+	}
+
+	@GetMapping("/UserInsert")
+	public String userInsert(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")開始");
+		model.addAttribute("title", "新規利用者登録");
+		model.addAttribute("user", careRecordService.newUser());
+		model.addAttribute("id", careRecordService.nextUserID());
+		model.addAttribute("blankRooms", careRecordService.blankRooms());
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", "userInsert::library");
+		model.addAttribute("main", "userInsert::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")終了");
+		return "view";
+	}
+
+	@PostMapping("/UserInsert")
+	public String userInsert(
+			@RequestParam("post_id")int id,
+			@ModelAttribute("user")User user,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/UserInsert\")開始");
+		String message = careRecordService.User_Insert(user, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/UserInsert\")終了");
+		return "redirect:/CareRecord/UserEntry";
 	}
 
 	@PostMapping("/Record")
@@ -79,6 +116,7 @@ public class CareRecordController {
 	public String detail(@Param("id")int id, Model model) {
 		careRecordService.__consoleOut__("detail開始");
 		model.addAttribute("title", "詳細情報");
+		model.addAttribute("id", id);
 		model.addAttribute("user", careRecordService.user(id));
 		model.addAttribute("detail", careRecordService.detail(id));
 		model.addAttribute("library", "detail::library");
@@ -87,13 +125,25 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@PostMapping("/DetailUpdate")
-	public String detailUpdate(
+	@PostMapping("/DetailInsert")
+	public String detailInsert(
 			@RequestParam("id")int id) {
-		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/DetailInsert\")開始");
 		String string = "";
 		String input = "";
-		return "redirect:/CareRecord/Birthday?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
+		return "redirect:/CareRecord/Birthday"
+				+ "?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
+	}
+
+	@PostMapping("/DetailUpdate")
+	public String detailUpdate(
+			@RequestParam("post_id")int id,
+			@ModelAttribute("detail")Detail detail,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("detailUpdate開始");
+		String message = careRecordService.detailUpdate(detail, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		return "redirect:/CareRecord/Detail?id=" + id;
 	}
 
 	@PostMapping("/RoutineList")
@@ -145,7 +195,7 @@ public class CareRecordController {
 			@RequestParam("post_date")String date,
 			@ModelAttribute("routine")Routine routine,
 			RedirectAttributes redirectAttributes) {
-		System.out.println("record開始");
+		careRecordService.__consoleOut__("routineUpdate開始");
 		String message = careRecordService.routineUpdate(routine, id);
 		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/CareRecord/RoutineList?date=" + date;
