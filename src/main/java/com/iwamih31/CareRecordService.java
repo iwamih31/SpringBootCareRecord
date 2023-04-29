@@ -21,8 +21,12 @@ public class CareRecordService {
 	@Autowired
 	private DetailRepository detailRepository;
 	@Autowired
-	private ToDoRepository toDoRepository;
+	private ToDoRepository todoRepository;
 
+
+	public List<User> userAll() {
+		return userRepository.findAll();
+	}
 
 	public List<User> userList() {
 		return userRepository.userList();
@@ -275,7 +279,7 @@ public class CareRecordService {
 	}
 
 	public void todoSave(ToDo todo) {
-		toDoRepository.save(todo);
+		todoRepository.save(todo);
 
 	}
 
@@ -289,7 +293,15 @@ public class CareRecordService {
 	}
 
 	public  List<ToDo> todoList() {
-		return toDoRepository.findAll();
+		return todoRepository.findAll();
+	}
+
+	public Object todo(int id) {
+		return todoRepository.getReferenceById(id);
+	}
+
+	public String[] todoNames() {
+		return todoRepository.todoNames();
 	}
 
 	public void setRoutineList(String date) {
@@ -342,10 +354,6 @@ public class CareRecordService {
 		}
 		System.out.println("routineUpdate終了");
 		return message;
-	}
-
-	public String[] todoNames() {
-		return toDoRepository.todoNames();
 	}
 
 	public List<Integer> blankRooms() {

@@ -36,7 +36,7 @@ public class CareRecordController {
 	public String userEntry(Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/UserEntry\")開始");
 		model.addAttribute("title", "利用者登録画面");
-		model.addAttribute("userList", careRecordService.userList());
+		model.addAttribute("userList", careRecordService.userAll());
 		model.addAttribute("library", "userEntry::library");
 		model.addAttribute("main", "userEntry::main");
 		return "view";
@@ -93,6 +93,23 @@ public class CareRecordController {
 		redirectAttributes.addFlashAttribute("message", message);
 		careRecordService.__consoleOut__("@PostMapping(\"/UserInsert\")終了");
 		return "redirect:/CareRecord/UserEntry";
+	}
+
+	@PostMapping("/UserUpdate")
+	public String userUpdate(
+			@RequestParam("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")開始");
+		String template = "userUpdate";
+		model.addAttribute("title", "利用者情報更新");
+		model.addAttribute("id", id);
+		model.addAttribute("user", careRecordService.user(id));
+		model.addAttribute("blankRooms", careRecordService.blankRooms());
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")終了");
+		return "view";
 	}
 
 	@PostMapping("/Record")
@@ -237,23 +254,39 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@PostMapping("/ToDoUpdate")
-	public String todoUpdate(
+	@GetMapping("/ToDoEntry")
+	public String todoEntry(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
+		model.addAttribute("title", "ToDo設定");
+		model.addAttribute("todo", new ToDo());
+		model.addAttribute("todo_list", careRecordService.todoList());
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", "todoEntry::library");
+		model.addAttribute("main", "todoEntry::main");
+		return "view";
+	}
+
+	@PostMapping("/ToDoInsert")
+	public String todoInsert(
 			@ModelAttribute("todo")ToDo todo) {
 		careRecordService.__consoleOut__("@PostMapping(\"/ToDoUpdate\")開始");
 		careRecordService.todoSave(todo);
 		return "redirect:/CareRecord/ToDoEntry";
 	}
 
-	@GetMapping("/ToDoEntry")
-	public String todoEntry(Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
-		model.addAttribute("title", "設定");
-		model.addAttribute("todo", new ToDo());
-		model.addAttribute("todo_list", careRecordService.todoList());
+	@PostMapping("/ToDoUpdate")
+	public String todoUpdate(
+			@RequestParam("post_id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/ToDoUpdate\")開始");
+		String template = "todoUpdate";
+		model.addAttribute("title", "ToDo情報更新");
+		model.addAttribute("id", id);
+		model.addAttribute("todo", careRecordService.todo(id));
 		model.addAttribute("options", careRecordService.options());
-		model.addAttribute("library", "todoEntry::library");
-		model.addAttribute("main", "todoEntry::main");
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@PostMapping(\"/ToDoUpdate\")終了");
 		return "view";
 	}
 
