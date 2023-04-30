@@ -43,7 +43,9 @@
 								<input type="text" th:field="*{level}" class="text-align-center"/>
 							</td>
 							<td>
-								<input type="text" th:field="*{move_in}" class="text-align-center"/>
+								<select th:field="*{move_in}">
+									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
+								</select>
 							</td>
 							<td>
 								<button form="update" type="submit" class="btn btn-primary">

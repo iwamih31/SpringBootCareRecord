@@ -40,13 +40,15 @@ body {
 	padding: 0px;
 }
 
-.table-clickable button, .table-detail input {
+.table-clickable button,
+.table-detail input,
+.table-detail select{
 	border: none;
 	color: inherit;
 	background-color: transparent;
 	width: 100%;
 	height: 2em;
-
+	text-align: center;
 }
 
 .parts {

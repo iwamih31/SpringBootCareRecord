@@ -9,7 +9,7 @@
 	<!--	main フラグメントの定義（メインコンテンツ）	-->
 	<div th:fragment="main">
 		<div class="header border-bottom">
-			<h1 class="h2">利用者一覧画面</h1>
+			<h1 class="h2">[[${title}]]</h1>
 		</div>
 		<!--	一覧表示	-->
 		<div>
@@ -18,7 +18,7 @@
 					<tr>
 						<th class="th-width">部屋番号</th>
 						<th class="th-width">名前</th>
-						<th class="th-width">選択</th>
+						<th class="th-width">記録</th>
 					</tr>
 				</thead>
 				<tbody>

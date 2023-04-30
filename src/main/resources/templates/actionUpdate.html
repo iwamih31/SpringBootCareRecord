@@ -9,40 +9,21 @@
 	<!--	main フラグメントの定義（メインコンテンツ）	-->
 	<div th:fragment="main">
 		<div class="header border-bottom">
-			<h1 class="h2">常時入力</h1>
+			<h1 class="h2">[[${title}]]</h1>
 		</div>
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex">
 				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
-				<form id="detail" method="post" th:action="@{/CareRecord/Detail}">
-					<input type="hidden" name="id" th:value="${user.id}" />
-					<button form="detail" type="submit" class="btn btn-primary button-detail">
-						詳細情報
-					</button>
-				</form>
-				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
-			<div class="flex margin_1em">
-				<form id="selectDate" method="post" th:action="@{/CareRecord/User}">
-					<label for="date">日付</label>
-					<select name="date" >
-						<option th:each="option : ${options.date}" th:value="${option}" th:selected="${option == date}">
-							[[${option}]]
-						</option>
-					</select>
-					<input type="hidden" name="id" th:value="${user.id}" />
-					<button form="selectDate" type="submit" class="btn btn-primary parts">
-						日付変更
-					</button>
-				</form>
-			</div>
-			<form id="insert" method="post" th:action="@{/CareRecord/ActionInsert}" class="form_record" th:object="${action}">
-				<input type="hidden" name="post_date" th:value="${date}" />
-				<input type="hidden" name="post_id" th:value="${user.id}" />
+			<form method="post" th:action="@{/CareRecord/ActionSave}" class="form_record" th:object="${action}">
+				<input type="hidden" name="action_id" th:value="${action.id}" />
+				<input type="hidden" name= "user_id" th:value="${user_id}"/>
+				<input type="hidden" name= "date" th:value="${date}"/>
 				<table class="table table-striped table-bordered table-hover">
 					<thead class="thead-light">
 						<tr>
+							<th class="th-width">日付</th>
 							<th class="th-width">時間</th>
 							<th class="th-width">睡眠</th>
 							<th class="th-width">水分</th>
@@ -58,6 +39,11 @@
 					</thead>
 					<tbody>
 						<tr>
+							<td>
+								<select th:field="*{date}">
+									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
+								</select>
+							</td>
 							<td>
 								<select th:field="*{time}">
 									<option th:each="option : ${options.time}" th:value="${option}">[[${option}]]</option>
@@ -116,41 +102,16 @@
 								<input type="text" th:field="*{situation}"/>
 							</td>
 							<td>
-								<button form="insert" type="submit" class="btn btn-primary parts">
-									記録
-								</button>
-							</td>
-						</tr>
-						<tr th:each="action : ${actions}">
-							<td>[[${action.time}]]</td>
-							<td>[[${action.sleep}]]</td>
-							<td>[[${action.water}]]</td>
-							<td>[[${action.pee1}]]</td>
-							<td>[[${action.pee2}]]</td>
-							<td>[[${action.poop}]]</td>
-							<td>[[${action.laxative}]]</td>
-							<td>[[${action.medicine}]]</td>
-							<td>[[${action.ointment}]]</td>
-							<td>[[${action.situation}]]</td>
-							<td>
-								<button th:form="${'update' + action.id}" type="submit" class="btn btn-primary parts bg_green">
-									編集
+								<button type="submit" class="btn btn-primary parts">
+									更新
 								</button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</form>
-			<th:block th:each="action : ${actions}">
-				<form th:id="${'update' + action.id}" method="post" th:action="@{/CareRecord/ActionUpdate}" class="form_record">
-					<input type="hidden" name="date" th:value="${date}" />
-					<input type="hidden" name="action_id" th:value="${action.id}" />
-					<input type="hidden" name="user_id" th:value="${action.user_id}" />
-				</form>
-			</th:block>
 		</div>
 		<br>
 		<a th:href="@{/main}">メインページへ</a>
 	</div>
-
 </html>

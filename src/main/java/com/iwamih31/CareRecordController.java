@@ -32,13 +32,15 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@GetMapping("/UserEntry")
-	public String userEntry(Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserEntry\")開始");
-		model.addAttribute("title", "利用者登録画面");
+	@GetMapping("/UserSetting")
+	public String userSetting(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserSetting\")開始");
+		String template = "userSetting";
+		model.addAttribute("title", "利用者設定");
 		model.addAttribute("userList", careRecordService.userAll());
-		model.addAttribute("library", "userEntry::library");
-		model.addAttribute("main", "userEntry::main");
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/UserSetting\")終了");
 		return "view";
 	}
 
@@ -58,13 +60,14 @@ public class CareRecordController {
 			@ModelAttribute("action")Action action,
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")開始");
+		String template = "user";
 		model.addAttribute("title", "常時入力");
 		model.addAttribute("date", date);
 		model.addAttribute("user", careRecordService.user(id));
-		model.addAttribute("records", careRecordService.records(id, date));
+		model.addAttribute("actions", careRecordService.actions(id, date));
 		model.addAttribute("options", careRecordService.options());
-		model.addAttribute("library", "user::library");
-		model.addAttribute("main", "user::main");
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")終了");
 		return "view";
 	}
@@ -89,17 +92,17 @@ public class CareRecordController {
 			@ModelAttribute("user")User user,
 			RedirectAttributes redirectAttributes) {
 		careRecordService.__consoleOut__("@PostMapping(\"/UserInsert\")開始");
-		String message = careRecordService.User_Insert(user, id);
+		String message = careRecordService.userInsert(user, id);
 		redirectAttributes.addFlashAttribute("message", message);
 		careRecordService.__consoleOut__("@PostMapping(\"/UserInsert\")終了");
-		return "redirect:/CareRecord/UserEntry";
+		return "redirect:/CareRecord/UserSetting";
 	}
 
 	@PostMapping("/UserUpdate")
 	public String userUpdate(
 			@RequestParam("id")int id,
 			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/UserUpdate\")開始");
 		String template = "userUpdate";
 		model.addAttribute("title", "利用者情報更新");
 		model.addAttribute("id", id);
@@ -108,20 +111,55 @@ public class CareRecordController {
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("library", template + "::library");
 		model.addAttribute("main", template + "::main");
-		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")終了");
+		careRecordService.__consoleOut__("@GetMapping(\"/UserUpdate\")終了");
 		return "view";
 	}
 
-	@PostMapping("/Record")
-	public String record(
+	@PostMapping("/ActionInsert")
+	public String actionInsert(
 			@RequestParam("post_id")int id,
 			@RequestParam("post_date")String date,
 			RedirectAttributes redirectAttributes,
 			@ModelAttribute("action")Action action) {
-		System.out.println("record開始");
-		String message = careRecordService.record_Insert(action, id, date);
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionInsert\")開始");
+		String message = careRecordService.actionInsert(action, id, date);
 		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionInsert\")終了");
 		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
+	}
+
+	@PostMapping("/ActionUpdate")
+	public String actionUpdate(
+			@RequestParam("action_id")int action_id,
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date")String date,
+			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionUpdate\")開始");
+		String template = "actionUpdate";
+		model.addAttribute("title", "常時入力更新");
+		model.addAttribute("user_id", user_id);
+		model.addAttribute("date", date);
+		model.addAttribute("user", careRecordService.user(user_id));
+		model.addAttribute("action", careRecordService.action(action_id));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionUpdate\")終了");
+		return "view";
+	}
+
+	@PostMapping("/ActionSave")
+	public String actionSave(
+			@RequestParam("action_id")int action_id,
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date")String date,
+			RedirectAttributes redirectAttributes,
+			@ModelAttribute("action")Action action) {
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionSave\")開始");
+		String message = careRecordService.actionSave(action, action_id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionSave\")終了");
+		return "redirect:/CareRecord/User?id=" + user_id + "&date=" + date;
 	}
 
 	@PostMapping("/Detail")
@@ -136,6 +174,7 @@ public class CareRecordController {
 		model.addAttribute("id", id);
 		model.addAttribute("user", careRecordService.user(id));
 		model.addAttribute("detail", careRecordService.detail(id));
+		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("library", "detail::library");
 		model.addAttribute("main", "detail::main");
 		careRecordService.__consoleOut__("detail終了");
@@ -254,24 +293,26 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@GetMapping("/ToDoEntry")
-	public String todoEntry(Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
+	@GetMapping("/ToDoSetting")
+	public String todoSetting(Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/ToDoSetting\")開始");
+		String template = "todoSetting";
 		model.addAttribute("title", "ToDo設定");
 		model.addAttribute("todo", new ToDo());
 		model.addAttribute("todo_list", careRecordService.todoList());
 		model.addAttribute("options", careRecordService.options());
-		model.addAttribute("library", "todoEntry::library");
-		model.addAttribute("main", "todoEntry::main");
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/ToDoSetting\")終了");
 		return "view";
 	}
 
 	@PostMapping("/ToDoInsert")
 	public String todoInsert(
 			@ModelAttribute("todo")ToDo todo) {
-		careRecordService.__consoleOut__("@PostMapping(\"/ToDoUpdate\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/ToDoInsert\")開始");
 		careRecordService.todoSave(todo);
-		return "redirect:/CareRecord/ToDoEntry";
+		return "redirect:/CareRecord/ToDoSetting";
 	}
 
 	@PostMapping("/ToDoUpdate")

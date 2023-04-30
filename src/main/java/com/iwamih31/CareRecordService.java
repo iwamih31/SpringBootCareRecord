@@ -17,7 +17,7 @@ public class CareRecordService {
 	@Autowired
 	private RoutineRepository routineRepository;
 	@Autowired
-	private ActionRepository recordRepository;
+	private ActionRepository actionRepository;
 	@Autowired
 	private DetailRepository detailRepository;
 	@Autowired
@@ -36,9 +36,9 @@ public class CareRecordService {
 		return userRepository.getReferenceById(id);
 	}
 
-	public String User_Insert(User user, int id) {
+	public String userInsert(User user, int id) {
 		System.out.println("recordInsert開始");
-		String message = "ID" + user.getId() + " のデータ";
+		String message = "ID = " + user.getId() + " のデータ";
 		user.setId(id);
 		List<User>userList = new ArrayList<User>();
 		userList.add(user);
@@ -63,31 +63,49 @@ public class CareRecordService {
 		return lastId + 1;
 	}
 
-	public List<Action> records(int id, String date) {
-		return recordRepository.getRecords(id, date);
+	public Object action(int id) {
+		return actionRepository.getReferenceById(id);
 	}
 
-	public List<Action> recordsAll() {
-		return recordRepository.findAll();
+	public List<Action> actions(int id, String date) {
+		return actionRepository.getActions(id, date);
 	}
 
-	public String record_Insert(Action record, int id, String date) {
-		System.out.println("recordInsert開始");
-		String message = "";
-		record.setUser_id(id);
-		record.setDate(date);
+	public List<Action> actionAll() {
+		return actionRepository.findAll();
+	}
+
+	public String actionInsert(Action action, int id, String date) {
+		__consoleOut__("actionInsert開始");
+		action.setUser_id(id);
+		action.setDate(date);
+		String message = "ID = " + action.getId() + " のデータ";
 		try {
-			recordRepository.save(record);
-			message = record.getTime() + " のデータを登録しました";
+			actionRepository.save(action);
+			message += " を登録しました";
 		} catch (Exception e) {
-			message = "登録に失敗しました " + e.getMessage();
+			message += "登録に失敗しました " + e.getMessage();
 		}
-		System.out.println("recordInsert終了");
+		__consoleOut__("actionInsert終了");
 		return message;
 	}
 
-	public Action insert_record(int id, String date) {
-		System.out.println("insert_record開始");
+	public String actionSave(Action action, int id) {
+		__consoleOut__("actionSave開始");
+		action.setId(id);
+		String message = "ID = " + action.getId() + " のデータ";
+		try {
+			actionRepository.save(action);
+			message += " を更新しました";
+		} catch (Exception e) {
+			message += "更新に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("actionSave終了");
+		return message;
+	}
+
+	public Action insert_Action(int id, String date) {
+		System.out.println("insert_Action開始");
 		return new Action(1, id,date, "", "", "", "", "", "", "", "", "", "" );
 	}
 
@@ -174,19 +192,6 @@ public class CareRecordService {
 				break;
 		}
 		return options;
-	}
-
-	public String dateString(int count) {
-
-		switch(count) {
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-		}
-		return null;
 	}
 
 	public String dateInputUrl(int count) {

@@ -17,7 +17,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 				+ " where user_id = :user_id"
 				+ " and date = :date"
 				+ " order by action.time asc")
-		public List<Action> getRecords(
+		public List<Action> getActions(
 				@Param("user_id")Integer user_id,
 				@Param("date")String date
 			);
@@ -30,7 +30,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 				 + "  sleep = :sleep"
 				 + " where"
 				 + "  id = :id")
-		public Integer updateRecord(
+		public Integer updateAction(
 				@Param("id") int id,
 				@Param("time") String time,
 				@Param("sleep") String sleep
