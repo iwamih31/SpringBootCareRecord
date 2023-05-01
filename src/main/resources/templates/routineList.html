@@ -9,19 +9,16 @@
 	<!--	main フラグメントの定義（メインコンテンツ）	-->
 	<div th:fragment="main">
 		<div class="header border-bottom">
-			<h1 class="h2">定期入力画面</h1>
+			<h1 class="h2">[[${title}]]</h1>
 		</div>
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex margin_1em">
-				<form id="selectDate" method="post" th:action="@{/CareRecord/RoutineList}">
-					<label for="date">日付</label>
-					<select name="date" >
-						<option th:each="option : ${options.date}" th:value="${option}" th:selected="${option == date}">
-							[[${option}]]
-						</option>
-					</select>
-					<button form="selectDate" type="submit" class="btn btn-primary parts">
+				<div class="date">[[${date}]]</div>
+				<form id="selectDate" method="post" th:action="@{/CareRecord/RoutineDate}">
+					<input type="hidden" name="date" th:value="${date}" />
+					<input type="hidden" name="id" th:value="${id}" />
+					<button form="selectDate" type="submit" class="btn btn-primary button-date">
 						日付変更
 					</button>
 				</form>

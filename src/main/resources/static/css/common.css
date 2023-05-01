@@ -55,6 +55,32 @@ body {
 	margin-right: 1em;
 }
 
+.form_record input {
+	width: 100%;
+}
+
+.user,
+.date
+ {
+	display: inline-flex;
+	border: solid blue thin;
+	border-radius: 0.2em;
+	font-size: 1.5em;
+	padding: 0.2em;
+	margin: 0.2em;
+}
+
+.date {
+	font-size: 1.3em;
+}
+
+.button-detail,
+.button-date
+ {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
 .bg_yellow {
 	background-color: yellow;
 }
