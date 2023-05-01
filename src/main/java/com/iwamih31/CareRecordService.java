@@ -317,12 +317,7 @@ public class CareRecordService {
 	}
 
 	public String[] names() {
-		List<User> users = userRepository.findAll();
-		String[] names = new String[users.size()];
-		for (int i = 0; i < names.length; i++) {
-			names[i] = users.get(i).getName();
-		}
-		return names;
+		return userRepository.names();
 	}
 
 	public  List<ToDo> todoList() {
@@ -331,10 +326,6 @@ public class CareRecordService {
 
 	public Object todo(int id) {
 		return todoRepository.getReferenceById(id);
-	}
-
-	public String[] todoNames() {
-		return todoRepository.todoNames();
 	}
 
 	public void setRoutineList(String date) {
@@ -364,7 +355,6 @@ public class CareRecordService {
 				}
 			}
 		}
-
 	}
 
 	public void __consoleOut__(String message) {
@@ -406,6 +396,44 @@ public class CareRecordService {
 	public User newUser() {
 		User newUser = new User(nextUserID(),0, "","" );
 		return newUser;
+	}
+
+	public Routine newRoutine(String date) {
+		Routine newRoutine = new Routine(nextRoutineID(), date, "", "", 0, "", "");
+		return newRoutine;
+	}
+
+	private Integer nextRoutineID() {
+		List<Routine> List = routineRepository.findAll();
+		int ListSize = List.size();
+		int lastId = 0;
+		if (List.size() > 0) {
+			lastId = List.get(ListSize - 1).getId();
+		}
+		__consoleOut__("lastId = " + lastId);
+		return lastId + 1;
+	}
+
+	public String[] todo_actions() {
+		return todoRepository.actions();
+	}
+
+	public void routine_Append(int id, String date) {
+		User user = user(id);
+		List<ToDo> todoList = todoList();
+		for (ToDo todo : todoList) {
+			int insertID = nextRoutineID();
+			__consoleOut__("insertID = " + insertID);
+			Routine routine = new Routine(
+					insertID,
+					date,
+					todo.getTime(),
+					todo.getAction(),
+					user .getRoom(),
+					user.getName(),
+					"");
+			routineRepository.save(routine);
+		}
 	}
 
 }

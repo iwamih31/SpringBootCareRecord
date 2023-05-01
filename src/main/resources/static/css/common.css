@@ -14,6 +14,10 @@ body {
 	text-align: center;
 }
 
+.padding_s {
+	padding: 0.3em;
+}
+
 .th-width {
 	border: solid;
 	text-align: center;
@@ -38,6 +42,14 @@ body {
 
 .table-clickable td {
 	padding: 0px;
+}
+
+.table-form select,
+.table-form input{
+	width: 100%;
+	height: 2em;
+	text-align: center;
+	margin: 0;
 }
 
 .table-clickable button,
@@ -74,8 +86,10 @@ body {
 	font-size: 1.3em;
 }
 
+
 .button-detail,
-.button-date
+.button-date,
+.margin-tb05em
  {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;

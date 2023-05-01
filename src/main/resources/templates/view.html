@@ -18,8 +18,10 @@
 	<!-- ヘッダー -->
 	<div id="header">
 		<div class="flex_space_between">
-			<a th:href="@{/CareRecord/UserList}"><img src="/image/logo.jpg" title="ロゴ"></a>
-			<nav>
+			<a th:href="@{/CareRecord/UserList}">
+				<img src="/image/logo.png" title="ロゴ" class="padding_s">
+			</a>
+			<nav class="padding_s">
 				<a th:href="@{/CareRecord/UserList}">
 					<button type="button" class="btn btn-primary">利用者一覧</button>
 				</a>
@@ -44,7 +46,9 @@
 	<!-- フッター -->
 	<div id="footer">
 		<hr>
-		<a th:href="@{/CareRecord/UserList}"><img src="/image/logo.jpg" title="ロゴ"></a>
+		<a th:href="@{/CareRecord/UserList}">
+			<img src="/image/logo.png" title="ロゴ"  class="padding_s">
+		</a>
 	</div>
 </body>
 </html>

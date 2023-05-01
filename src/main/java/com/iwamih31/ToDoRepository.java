@@ -10,5 +10,5 @@ public interface ToDoRepository extends JpaRepository<ToDo, Integer> {
 	/**	todo情報取得 */
 	@Query("select todo.action"
 			+ " from ToDo todo")
-	String[] todoNames();
+	String[] actions();
 }
