@@ -4,7 +4,9 @@
 	width: 100%;
 }
 
-.user {
+.user,
+.date
+ {
 	display: inline-flex;
 	border: solid blue thin;
 	border-radius: 0.2em;
@@ -13,7 +15,13 @@
 	margin: 0.2em;
 }
 
-.button-detail {
+.date {
+	font-size: 1.3em;
+}
+
+.button-detail,
+.button-date
+ {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
 }

@@ -40,10 +40,14 @@
 								<input type="text" th:field="*{birthday}" class="text-align-center"/>
 							</td>
 							<td>
-								<input type="text" th:field="*{level}" class="text-align-center"/>
+								<select th:field="*{level}">
+									<option value=""></option>
+									<option th:each="option : ${options.level}" th:value="${option}">[[${option}]]</option>
+								</select>
 							</td>
 							<td>
 								<select th:field="*{move_in}">
+									<option value=""></option>
 									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>

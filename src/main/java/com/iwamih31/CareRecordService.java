@@ -36,10 +36,10 @@ public class CareRecordService {
 		return userRepository.getReferenceById(id);
 	}
 
-	public String userInsert(User user, int id) {
-		System.out.println("recordInsert開始");
-		String message = "ID = " + user.getId() + " のデータ";
+	public String user_Insert(User user, int id) {
+		System.out.println("userInsert開始");
 		user.setId(id);
+		String message = "ID = " + user.getId() + " のデータ";
 		List<User>userList = new ArrayList<User>();
 		userList.add(user);
 		try {
@@ -48,7 +48,23 @@ public class CareRecordService {
 		} catch (Exception e) {
 			message += "登録に失敗しました " + e.getMessage();
 		}
-		System.out.println("recordInsert終了");
+		System.out.println("userInsert終了");
+		return message;
+	}
+
+	public String user_Update(User user, int id) {
+		System.out.println("userUpdate開始");
+		user.setId(id);
+		String message = "ID = " + user.getId() + " のデータ";
+		List<User>userList = new ArrayList<User>();
+		userList.add(user);
+		try {
+			userRepository.saveAllAndFlush(userList);
+			message += " を更新しました";
+		} catch (Exception e) {
+			message += "更新に失敗しました " + e.getMessage();
+		}
+		System.out.println("userUpdate終了");
 		return message;
 	}
 
@@ -75,9 +91,21 @@ public class CareRecordService {
 		return actionRepository.findAll();
 	}
 
-	public String actionInsert(Action action, int id, String date) {
+	private Integer actionNextID() {
+		List<Action> List = actionRepository.findAll();
+		int userListSize = List.size();
+		int lastId = 0;
+		if (List.size() > 0) {
+			lastId = List.get(userListSize - 1).getId();
+		}
+		__consoleOut__("lastId = " + lastId);
+		return lastId + 1;
+	}
+
+	public String action_Insert(Action action, int user_id, String date) {
 		__consoleOut__("actionInsert開始");
-		action.setUser_id(id);
+		action.setId(actionNextID());
+		action.setUser_id(user_id);
 		action.setDate(date);
 		String message = "ID = " + action.getId() + " のデータ";
 		try {
@@ -90,7 +118,7 @@ public class CareRecordService {
 		return message;
 	}
 
-	public String actionSave(Action action, int id) {
+	public String action_Update(Action action, int id) {
 		__consoleOut__("actionSave開始");
 		action.setId(id);
 		String message = "ID = " + action.getId() + " のデータ";

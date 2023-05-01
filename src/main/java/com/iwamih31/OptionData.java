@@ -47,6 +47,17 @@ public class OptionData {
   // 利用状況
   public static String[] use = {"利用中", "利用終了"};
 
+  // 介護度
+  public static String[] level = {
+  		"要介護１",
+  		"要介護２",
+  		"要介護３",
+  		"要介護４",
+  		"要介護５",
+  		"要支援１",
+  		"要支援２"
+  	};
+
   /** start から end まで add ずつ増やした数を代入した配列を作成 */
   public static Integer[] nums(int start, int end, int add) {
 		Integer[] nums = new Integer[(end - start) / add + 1];
