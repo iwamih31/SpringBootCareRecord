@@ -107,6 +107,10 @@ body {
 	background-color: red;
 }
 
+.color_red {
+	color: red;
+}
+
 .alert {
 	margin: 0
 }

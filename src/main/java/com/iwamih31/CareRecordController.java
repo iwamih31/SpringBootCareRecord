@@ -180,6 +180,27 @@ public class CareRecordController {
 		return "redirect:/CareRecord/User?id=" + user_id + "&date=" + post_date;
 	}
 
+	@PostMapping("/ActionDelete")
+	public String actionDelete(
+			@RequestParam("action_id")int action_id,
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date")String date,
+			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/actionDelete\")開始 date=" + date);
+		String template = "actionDelete";
+		model.addAttribute("title", "常時入力データ削除");
+		model.addAttribute("user_id", user_id);
+		model.addAttribute("action_id", action_id);
+		model.addAttribute("date", date);
+		model.addAttribute("user", careRecordService.user(user_id));
+		model.addAttribute("action", careRecordService.action(action_id));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@PostMapping(\"/actionDelete\")終了 date=" + date);
+		return "view";
+	}
+
 	@PostMapping("/Detail")
 	public String detail(
 			@RequestParam("id")int id) {
@@ -267,6 +288,7 @@ public class CareRecordController {
 			@Param("date")String date,
 			@ModelAttribute("routine")Routine routine,
 			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/RoutineClicked\")開始");
 		if(date == null) date = careRecordService.today();
 		careRecordService.setRoutineList(date);
 		model.addAttribute("title", "定期入力");
@@ -276,19 +298,8 @@ public class CareRecordController {
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("library", "routineClicked::library");
 		model.addAttribute("main", "routineClicked::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/RoutineClicked\")終了");
 		return "view";
-	}
-
-	@PostMapping("/RoutineUpdate")
-	public String routineUpdate(
-			@RequestParam("post_id")int id,
-			@RequestParam("post_date")String date,
-			@ModelAttribute("routine")Routine routine,
-			RedirectAttributes redirectAttributes) {
-		careRecordService.__consoleOut__("routineUpdate開始");
-		String message = careRecordService.routineUpdate(routine, id);
-		redirectAttributes.addFlashAttribute("message", message);
-		return "redirect:/CareRecord/RoutineList?date=" + date;
 	}
 
 	@PostMapping("/Routine")
@@ -306,6 +317,7 @@ public class CareRecordController {
 			@Param("date")String date,
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")開始");
+		String template = "routine";
 		model.addAttribute("title", "定時入力データ編集");
 		model.addAttribute("id", id);
 		model.addAttribute("date", date);
@@ -313,8 +325,8 @@ public class CareRecordController {
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("todo_actions", careRecordService.todo_actions());
 		model.addAttribute("names", careRecordService.names());
-		model.addAttribute("library", "routine::library");
-		model.addAttribute("main", "routine::main");
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
 		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")終了");
 		return "view";
 	}
@@ -323,6 +335,7 @@ public class CareRecordController {
 	public String routineInsert(
 			@RequestParam("date")String date,
 			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineInsert\")開始");
 		String template = "routineInsert";
 		model.addAttribute("title", "定期入力新規データ作成");
 		model.addAttribute("date", date);
@@ -332,6 +345,7 @@ public class CareRecordController {
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("library", template + "::library");
 		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineInsert\")終了");
 		return "view";
 	}
 
@@ -339,15 +353,58 @@ public class CareRecordController {
 	public String routineAppend(
 			@RequestParam("date")String date,
 			Model model) {
-			careRecordService.__consoleOut__("@GetMapping(\"/RoutineAppend\")開始");
+			careRecordService.__consoleOut__("@PostMapping(\"/RoutineAppend\")開始");
 			String template = "routineAppend";
 			model.addAttribute("title", "定期入力データ追加");
 			model.addAttribute("date", date);
 			model.addAttribute("userList", careRecordService.userAll());
 			model.addAttribute("library", template + "::library");
 			model.addAttribute("main", template + "::main");
-			careRecordService.__consoleOut__("@GetMapping(\"/RoutineAppend\")終了");
+			careRecordService.__consoleOut__("@PostMapping(\"/RoutineAppend\")終了");
 		return "view";
+	}
+
+	@PostMapping("/RoutineUpdate")
+	public String routineUpdate(
+			@RequestParam("post_id")int id,
+			@RequestParam("post_date")String date,
+			@ModelAttribute("routine")Routine routine,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineUpdate\")開始");
+		String message = careRecordService.routineUpdate(routine, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineUpdate\")終了");
+		return "redirect:/CareRecord/RoutineList?date=" + date;
+	}
+
+	@PostMapping("/RoutineDelete")
+	public String routineDelete(
+			@RequestParam("post_id")int id,
+			@RequestParam("post_date")String date,
+			Model model) {
+			careRecordService.__consoleOut__("@PostMapping(\"/RoutineDelete\")開始");
+			String template = "routineDelete";
+			model.addAttribute("title", "定期入力データ削除");
+			model.addAttribute("id", id);
+			model.addAttribute("date", date);
+			model.addAttribute("routine", careRecordService.routine(id));
+			model.addAttribute("library", template + "::library");
+			model.addAttribute("main", template + "::main");
+			careRecordService.__consoleOut__("@PostMapping(\"/RoutineDelete\")終了");
+		return "view";
+	}
+
+	@PostMapping("/Routine/Delete")
+	public String routine_Delete(
+			@RequestParam("post_date")String date,
+			@RequestParam("post_id")int id,
+			@RequestParam("select")int select,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Delete\")開始");
+		String message = careRecordService.routine_Delete(id, select);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Delete\")終了");
+		return "redirect:/CareRecord/RoutineList?date=" + date;
 	}
 
 	@PostMapping("/Routine/Append")
