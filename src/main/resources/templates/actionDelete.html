@@ -13,15 +13,23 @@
 		</div>
 		<!--	一覧表示	-->
 		<div>
+			<div class="flex margin_1em color_red">
+				<h2>!! 確認 !!</h2>
+			</div>
 			<div class="flex">
 				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
 				<form id="delete" method="post"
-				th:action="@{/CareRecord/ActionDelete}" class="form_record" th:object="${action}">
+				th:action="@{/CareRecord/Action/Delete}" class="form_record" th:object="${action}">
 					<input type="hidden" name="action_id" th:value="${action.id}" />
 					<input type="hidden" name= "user_id" th:value="${user_id}"/>
 					<input type="hidden" name= "post_date" th:value="${date}"/>
+					<label for="select">こちらのデータを本当に削除しますか？</label>
+					<select name="select">
+						<option value="0">キャンセル</option>
+						<option value="1">削除する</option>
+					</select>
 					<button form="delete" type="submit" class="btn btn-primary margin-tb05em bg_red">
-						削除
+						確定
 					</button>
 				</form>
 			</div>
@@ -32,6 +40,7 @@
 				<table class="table table-striped table-bordered table-hover">
 					<thead class="thead-light">
 						<tr>
+							<th class="th-width">ID</th>
 							<th class="th-width">日付</th>
 							<th class="th-width">時間</th>
 							<th class="th-width">睡眠</th>
@@ -43,78 +52,22 @@
 							<th class="th-width">服薬</th>
 							<th class="th-width">処置</th>
 							<th class="th-width">様子</th>
-							<th class="th-width"></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>
-								<select th:field="*{date}">
-									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{time}">
-									<option th:each="option : ${options.time}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{sleep}">
-									<option value=""></option>
-									<option th:each="option : ${options.sleep}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{water}">
-									<option value=""></option>
-									<option th:each="option : ${options.water}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{pee1}">
-									<option value=""></option>
-									<option th:each="option : ${options.pee1}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{pee2}">
-									<option value=""></option>
-									<option th:each="option : ${options.pee2}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{poop}">
-									<option value=""></option>
-									<option th:each="option : ${options.poop}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{laxative}">
-									<option value=""></option>
-									<option th:each="option : ${options.laxative}" th:value="${option}">[[${option}]]</option>
-									<option value="不明">不明</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{medicine}">
-									<option value=""></option>
-									<option th:each="option : ${options.medicine}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{ointment}">
-									<option value=""></option>
-									<option th:each="option : ${options.ointment}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<input type="text" th:field="*{situation}"/>
-							</td>
-							<td>
-								<button form="update" type="submit" class="btn btn-primary parts">
-									更新
-								</button>
-							</td>
+							<td>[[*{id}]]</td>
+							<td>[[*{date}]]</td>
+							<td>[[*{time}]]</td>
+							<td>[[*{sleep}]]</td>
+							<td>[[*{water}]]</td>
+							<td>[[*{pee1}]]</td>
+							<td>[[*{pee2}]]</td>
+							<td>[[*{poop}]]</td>
+							<td>[[*{laxative}]]</td>
+							<td>[[*{medicine}]]</td>
+							<td>[[*{ointment}]]</td>
+							<td>[[*{situation}]]</td>
 						</tr>
 					</tbody>
 				</table>

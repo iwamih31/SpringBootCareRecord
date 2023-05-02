@@ -453,7 +453,28 @@ public class CareRecordService {
 		} catch (Exception e) {
 			message += "削除に失敗しました " + e.getMessage();
 		}
-		__consoleOut__("routineUpdate終了");
+		__consoleOut__("routine_Delete(int id)終了");
+		return message;
+	}
+
+	public String action_Delete(int id, int select) {
+		__consoleOut__("action_Delete(int id, int select)開始");
+		String message = "キャンセルしました";
+		if (select == 1) message = action_Delete(id);
+		__consoleOut__("action_Delete(int id, int select)終了");
+		return message;
+	}
+
+	public String action_Delete(int id) {
+		__consoleOut__("action_Delete(int id)開始");
+		String message = "ID = " + id + " のデータ";
+		try {
+			actionRepository.deleteById(id);
+			message += "を削除しました";
+		} catch (Exception e) {
+			message += "削除に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("action_Delete(int id)終了");
 		return message;
 	}
 

@@ -184,21 +184,36 @@ public class CareRecordController {
 	public String actionDelete(
 			@RequestParam("action_id")int action_id,
 			@RequestParam("user_id")int user_id,
-			@RequestParam("date")String date,
+			@RequestParam("post_date")String post_date,
 			Model model) {
-		careRecordService.__consoleOut__("@PostMapping(\"/actionDelete\")開始 date=" + date);
+		careRecordService.__consoleOut__("@PostMapping(\"/actionDelete\")開始 date=" + post_date);
 		String template = "actionDelete";
 		model.addAttribute("title", "常時入力データ削除");
 		model.addAttribute("user_id", user_id);
 		model.addAttribute("action_id", action_id);
-		model.addAttribute("date", date);
+		model.addAttribute("date", post_date);
 		model.addAttribute("user", careRecordService.user(user_id));
 		model.addAttribute("action", careRecordService.action(action_id));
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("library", template + "::library");
 		model.addAttribute("main", template + "::main");
-		careRecordService.__consoleOut__("@PostMapping(\"/actionDelete\")終了 date=" + date);
+		careRecordService.__consoleOut__("@PostMapping(\"/actionDelete\")終了 date=" + post_date);
 		return "view";
+	}
+
+
+	@PostMapping("/Action/Delete")
+	public String action_Delete(
+			@RequestParam("action_id")int action_id,
+			@RequestParam("user_id")int user_id,
+			@RequestParam("select")int select,
+			@RequestParam("post_date")String post_date,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Action/Update\")開始 date=" + post_date);
+		String message = careRecordService.action_Delete(action_id ,select);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Action/Update\")終了");
+		return "redirect:/CareRecord/User?id=" + user_id + "&date=" + post_date;
 	}
 
 	@PostMapping("/Detail")
