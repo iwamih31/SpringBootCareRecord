@@ -106,13 +106,22 @@ public class CareRecordController {
 
 	@PostMapping("/UserUpdate")
 	public String userUpdate(
-			@RequestParam("id")int id,
+			@RequestParam("id")int id) {
+		careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")終了");
+		return "redirect:/CareRecord/UserUpdate?id=" + id;
+	}
+
+	@GetMapping("/UserUpdate")
+	public String userUpdate(
+			@Param("id")int id,
 			Model model) {
 		careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")開始");
 		String template = "userUpdate";
 		model.addAttribute("title", "利用者情報更新");
 		model.addAttribute("id", id);
 		model.addAttribute("user", careRecordService.user(id));
+		model.addAttribute("detail", careRecordService.detail(id));
 		model.addAttribute("blankRooms", careRecordService.blankRooms());
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("library", template + "::library");
@@ -240,6 +249,54 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@GetMapping("/DetailList")
+	public String detailList(
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/DetailList\")開始");
+		String template = "detailList";
+		model.addAttribute("title", "利用者情報印刷");
+		model.addAttribute("userList", careRecordService.userAll());
+		model.addAttribute("detailList", careRecordService.detailAll());
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/DetailList\")終了");
+		return "view";
+	}
+
+	@PostMapping("/DetailSetting")
+	public String detailSetting(
+			@RequestParam("id")int id) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")終了");
+		return "redirect:/CareRecord/DetailSetting?id=" + id;
+	}
+
+	@PostMapping("/Detail/Output/Excel")
+	public String detail_Output_Excel(
+			@RequestParam("id")int id) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")開始");
+		careRecordService.detail_Output_Excel();
+		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")終了");
+		return "redirect:/CareRecord/DetailSetting?id=" + id;
+	}
+
+	@GetMapping("/DetailSetting")
+	public String detailSetting(
+			@Param("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/Detail\")開始");
+		String template = "detailSetting";
+		model.addAttribute("title", "詳細情報");
+		model.addAttribute("id", id);
+		model.addAttribute("user", careRecordService.user(id));
+		model.addAttribute("detail", careRecordService.detail(id));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/Detail\")終了");
+		return "view";
+	}
+
 	@PostMapping("/DetailInsert")
 	public String detailInsert(
 			@RequestParam("id")int id) {
@@ -251,16 +308,28 @@ public class CareRecordController {
 				+ "?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
 	}
 
-	@PostMapping("/DetailUpdate")
-	public String detailUpdate(
+//	@PostMapping("/DetailUpdate")
+//	public String detailUpdate(
+//			@RequestParam("post_id")int id,
+//			@ModelAttribute("detail")Detail detail,
+//			RedirectAttributes redirectAttributes) {
+//		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
+//		String message = careRecordService.detail_Update(detail, id);
+//		redirectAttributes.addFlashAttribute("message", message);
+//		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")終了");
+//		return "redirect:/CareRecord/DetailSetting?id=" + id;
+//	}
+
+	@PostMapping("/Detail/Update")
+	public String detail_Update(
 			@RequestParam("post_id")int id,
 			@ModelAttribute("detail")Detail detail,
 			RedirectAttributes redirectAttributes) {
 		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")開始");
-		String message = careRecordService.detailUpdate(detail, id);
+		String message = careRecordService.detail_Update(detail, id);
 		redirectAttributes.addFlashAttribute("message", message);
 		careRecordService.__consoleOut__("@PostMapping(\"/DetailUpdate\")終了");
-		return "redirect:/CareRecord/Detail?id=" + id;
+		return "redirect:/CareRecord/UserUpdate?id=" + id;
 	}
 
 	@PostMapping("/RoutineList")
@@ -447,14 +516,28 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@GetMapping("/Setting")
-	public String setting(
+	@GetMapping("/Report")
+	public String report(
 			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
+		String template = "report";
 		model.addAttribute("title", "設定");
-		model.addAttribute("library", "setting::library");
-		model.addAttribute("main", "setting::main");
+		model.addAttribute("library", template + "::library");
+		model.addAttribute("main", template + "::main");
+		careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
 		return "view";
+	}
+
+		@GetMapping("/Setting")
+		public String setting(
+				Model model) {
+			careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
+			String template = "setting";
+			model.addAttribute("title", "設定");
+			model.addAttribute("library", template + "::library");
+			model.addAttribute("main", template + "::main");
+			careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
+			return "view";
 	}
 
 	@GetMapping("/ToDoSetting")
@@ -541,7 +624,7 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("count = " + count);
 		careRecordService.birthdayUpdate(id, string, input);
 		careRecordService.__consoleOut__("@PostMapping(\"/BirthdayUpdate\")終了");
-		return "redirect:/CareRecord/Detail?id=" + id;
+		return "redirect:/CareRecord/UserUpdate?id=" + id;
 	}
 
 	@PostMapping("/ActionDate")

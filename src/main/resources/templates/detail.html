@@ -13,53 +13,37 @@
 		</div>
 		<!--	一覧表示	-->
 		<div>
-			<div class="flex">
+			<div class="center">
 				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
-				<form id="insert" method="post" th:action="@{/CareRecord/DetailInsert}">
-					<input type="hidden" name="id" th:value="${user.id}" />
-					<button form="insert" type="submit" class="btn btn-primary button-detail">
-						詳細情報登録
-					</button>
-				</form>
 			</div>
-			<form id="update" method="post" th:action="@{/CareRecord/DetailUpdate}" class="form_record" th:object="${detail}">
-				<input type="hidden" name="post_id" th:value="${id}" />
-				<input type="hidden" th:field="*{id}" />
-				<table class="table table-striped table-bordered table-hover table-detail">
-					<thead class="thead-light">
-						<tr>
-							<th class="th-width">誕生日</th>
-							<th class="th-width">介護度</th>
-							<th class="th-width">入居日</th>
-							<th class="th-width"></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								<input type="text" th:field="*{birthday}" class="text-align-center"/>
-							</td>
-							<td>
-								<select th:field="*{level}">
-									<option value=""></option>
-									<option th:each="option : ${options.level}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<select th:field="*{move_in}">
-									<option value=""></option>
-									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-							<td>
-								<button form="update" type="submit" class="btn btn-primary">
-									情報更新
-								</button>
-							</td>
-						</tr>
-					</tbody>
+			<th:block th:object="${detail}">
+				<table class="detail font-size-large">
+					<tr>
+						<td>
+							● 誕生日
+						</td>
+						<td>
+							：[[*{birthday}]]
+						</td>
+					</tr>
+					<tr>
+						<td>
+							● 介護度
+						</td>
+						<td>
+							：[[*{level}]]
+						</td>
+					</tr>
+					<tr>
+						<td>
+							● 入居日
+						</td>
+						<td>
+							：[[*{move_in}]]
+						</td>
+					</tr>
 				</table>
-			</form>
+			</th:block>
 		</div>
 		<br>
 		<a th:href="@{/main}">メインページへ</a>

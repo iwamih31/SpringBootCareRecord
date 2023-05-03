@@ -14,9 +14,14 @@ body {
 	text-align: center;
 }
 
+nav button {
+	margin: 0.2em;
+}
+
 .padding_s {
 	padding: 0.3em;
 }
+
 
 .th-width {
 	border: solid;
@@ -63,12 +68,34 @@ body {
 	text-align: center;
 }
 
+.table-detail td {
+	text-align: center;
+}
+
 .parts {
 	margin-right: 1em;
 }
 
-.form_record input {
+.form_record input,
+.width_full
+ {
 	width: 100%;
+}
+
+.center {
+	display:table;
+	margin: auto;
+	width: auto;
+}
+
+.detail {
+	margin: auto;
+	width: auto;
+	text-align: left;
+}
+
+.detail td {
+	padding: 0.3em;
 }
 
 .user,
@@ -109,6 +136,10 @@ body {
 
 .color_red {
 	color: red;
+}
+
+.font-size-large{
+	font-size: x-large;
 }
 
 .alert {

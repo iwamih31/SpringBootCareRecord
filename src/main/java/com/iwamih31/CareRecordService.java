@@ -39,12 +39,15 @@ public class CareRecordService {
 	public String user_Insert(User user, int id) {
 		System.out.println("userInsert開始");
 		user.setId(id);
-		String message = "ID = " + user.getId() + " のデータ";
+		String message = "ID = " + user.getId() + " の利用者データ";
 		List<User>userList = new ArrayList<User>();
 		userList.add(user);
 		try {
 			userRepository.saveAllAndFlush(userList);
 			message += " を登録しました";
+			//詳細情報初期化
+			Detail detail = new Detail(id, "", "", "");
+			message += "  " + detail_Update(detail, id);
 		} catch (Exception e) {
 			message += "登録に失敗しました " + e.getMessage();
 		}
@@ -55,7 +58,7 @@ public class CareRecordService {
 	public String user_Update(User user, int id) {
 		System.out.println("userUpdate開始");
 		user.setId(id);
-		String message = "ID = " + user.getId() + " のデータ";
+		String message = "ID = " + user.getId() + " の利用者データ";
 		List<User>userList = new ArrayList<User>();
 		userList.add(user);
 		try {
@@ -121,7 +124,7 @@ public class CareRecordService {
 	public String action_Update(Action action, int id) {
 		__consoleOut__("actionSave開始");
 		action.setId(id);
-		String message = "ID = " + action.getId() + " のデータ";
+		String message = "ID = " + action.getId() + " の常時入力データ";
 		try {
 			actionRepository.save(action);
 			message += " を更新しました";
@@ -152,20 +155,45 @@ public class CareRecordService {
 		return detail;
 	}
 
-	public String detailUpdate(Detail detail, int id) {
+public Object detailAll() {
+		return detailRepository.findAll();
+	}
+
+//	public String detailUpdate(Detail detail, int id) {
+//		detail.setId(id);
+//		List<Detail>detailList = new ArrayList<Detail>();
+//		detailList.add(detail);
+//		System.out.println("detailUpdate開始");
+//		String message = "";
+//		try {
+//			detailRepository.saveAll(detailList);
+//			message = "ID = " + detail.getId() + " のデータを更新しました";
+//		} catch (Exception e) {
+//			message = "登録に失敗しました " + e.getMessage();
+//		}
+//		System.out.println("routineUpdate終了");
+//		return message;
+//	}
+
+	public String detail_Update(Detail detail, int id) {
 		detail.setId(id);
 		List<Detail>detailList = new ArrayList<Detail>();
 		detailList.add(detail);
-		System.out.println("detailUpdate開始");
+		System.out.println("detail_Update開始");
 		String message = "";
 		try {
 			detailRepository.saveAll(detailList);
-			message = "ID = " + detail.getId() + " のデータを更新しました";
+			message = "ID = " + detail.getId() + " の詳細データを更新しました";
 		} catch (Exception e) {
 			message = "登録に失敗しました " + e.getMessage();
 		}
 		System.out.println("routineUpdate終了");
 		return message;
+	}
+
+	/** 利用者情報データをExcelとして出力 */
+	public void detail_Output_Excel() {
+		// TODO 自動生成されたメソッド・スタブ
 	}
 
 	public List<Routine> routineList(String date) {
@@ -241,7 +269,7 @@ public class CareRecordService {
 				data = "日にち";
 				break;
 		}
-		return "生まれた" + data + "を入力して下さい";
+		return "生まれた" + data + "を選択して下さい";
 	}
 
 	/** 年、月、日の順番で受け取ったそれぞれの数字の桁を合わせ/で繋げる */
@@ -371,7 +399,7 @@ public class CareRecordService {
 		String message = "";
 		try {
 			routineRepository.saveAll(routineList);
-			message = "ID = " + routine.getId() + " のデータを更新しました";
+			message = "ID = " + routine.getId() + " の定期入力データを更新しました";
 		} catch (Exception e) {
 			message = "登録に失敗しました " + e.getMessage();
 		}
