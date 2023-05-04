@@ -196,7 +196,35 @@ public Object detailAll() {
 		// TODO 自動生成されたメソッド・スタブ
 	}
 
+	public void setRoutineList(String date) {
+		List<ToDo> todoList = todoList();
+		for (ToDo todo : todoList) {
+			List<User> userList = userList();
+			for (User user : userList) {
+				List<Routine> routineAll = routineAll();
+				int lastRoutineID = 0;
+				if (routineAll.size() > 0) {
+					int lastRoutineNum = routineAll.size() - 1;
+					lastRoutineID = routineAll.get(lastRoutineNum).getId();
+				}
+				int insertID = lastRoutineID + 1;
+				__consoleOut__("insertID = " + insertID);
+				Routine routine = new Routine(
+						lastRoutineID + 1,
+						date,
+						todo.getTime(),
+						todo.getAction(),
+						user.getRoom(),
+						user.getName(),
+						"");
+				routineRepository.save(routine);
+			}
+		}
+	}
+
 	public List<Routine> routineList(String date) {
+		int listSize = routineRepository.routineList(date).size();
+		if (listSize == 0) setRoutineList(date);
 		return routineRepository.routineList(date);
 	}
 
@@ -354,35 +382,6 @@ public Object detailAll() {
 
 	public Object todo(int id) {
 		return todoRepository.getReferenceById(id);
-	}
-
-	public void setRoutineList(String date) {
-		List<Routine> routineList = routineList(date);
-		if (routineList.size() == 0) {
-			List<ToDo> todoList = todoList();
-			for (ToDo todo : todoList) {
-				List<User> userList = userList();
-				for (User user : userList) {
-					List<Routine> routineAll = routineAll();
-					int lastRoutineID = 0;
-					if (routineAll.size() > 0) {
-						int lastRoutineNum = routineAll.size() - 1;
-						lastRoutineID = routineAll.get(lastRoutineNum).getId();
-					}
-					int insertID = lastRoutineID + 1;
-					__consoleOut__("insertID = " + insertID);
-					Routine routine = new Routine(
-							lastRoutineID + 1,
-							date,
-							todo.getTime(),
-							todo.getAction(),
-							user.getRoom(),
-							user.getName(),
-							"");
-					routineRepository.save(routine);
-				}
-			}
-		}
 	}
 
 	public void __consoleOut__(String message) {

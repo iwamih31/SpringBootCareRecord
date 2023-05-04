@@ -9,7 +9,7 @@
 	<!--	main フラグメントの定義（メインコンテンツ）	-->
 	<div th:fragment="main">
 		<div class="header border-bottom">
-			<h1 class="h2">設定メニュー</h1>
+			<h1 class="h2">[[${title}]]</h1>
 		</div>
 		<div class="margin_1em">
 			<nav>
@@ -23,7 +23,7 @@
 					<button type="button" class="btn btn-primary">定期入力データ一覧</button>
 				</a>
 				<a th:href="@{/CareRecord/OfficeSetting}">
-					<button type="button" class="btn btn-primary">行事一覧</button>
+					<button type="button" class="btn btn-primary">行事データ一覧</button>
 				</a>
 			</nav>
 		</div>

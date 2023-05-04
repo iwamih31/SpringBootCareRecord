@@ -16,7 +16,8 @@
 			<div class="flex">
 				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
 				<form id="detail" method="post" th:action="@{/CareRecord/Detail}">
-					<input type="hidden" name="id" th:value="${user.id}" />
+					<input type="hidden" name="id" th:value="${id}" />
+					<input type="hidden" name="date" th:value="${date}" />
 					<button form="detail" type="submit" class="btn btn-primary button-detail">
 						詳細情報表示
 					</button>
