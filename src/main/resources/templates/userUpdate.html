@@ -14,12 +14,6 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex">
-				<form id="detail" method="post" th:action="@{/CareRecord/DetailSetting}">
-					<input type="hidden" name="id" th:value="${user.id}" />
-					<button form="detail" type="submit" class="btn btn-primary button-detail">
-						詳細情報設定
-					</button>
-				</form>
 			</div>
 			<form id="user_update" method="post" th:action="@{/CareRecord/User/Update}" class="form_record" th:object="${user}">
 				<input type="hidden" name= "post_id" th:value="${id}"/>
@@ -63,15 +57,14 @@
 				</table>
 			</form>
 			<div class="text-align-center">
-				<form id="insert" method="post" th:action="@{/CareRecord/Detail/Birthday/Update}">
-					<input type="hidden" name="id" th:value="${user.id}" />
-					<button form="insert" type="submit" class="btn btn-primary button-detail">
-						誕生日登録
-					</button>
+				<form id="birthday_Update" method="post" th:action="@{/CareRecord/Detail/Birthday/Update}">
+					<input type="hidden" name="id" th:value="${id}" />
 				</form>
-
-				<form id="detail_update" method="post" th:action="@{/CareRecord/Detail/Update}" class="form_detail" th:object="${detail}">
-					<input type="hidden" name= "post_id" th:value="${id}"/>
+				<form id="move_in_Update" method="post" th:action="@{/CareRecord/Detail/Move_in/Update}">
+					<input type="hidden" name="id" th:value="${id}" />
+				</form>
+				<form id="detail_Update" method="post" th:action="@{/CareRecord/Detail/Update}" class="form_detail" th:object="${detail}">
+					<input type="hidden" name= "id" th:value="${id}"/>
 					<table class="detail">
 						<tr>
 							<td>
@@ -79,10 +72,11 @@
 							</td>
 							<td>
 								➡
-								<select th:field="*{birthday}">
-									<option value=""></option>
-									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
-								</select>
+								<input type="hidden" th:field="*{birthday}"/>
+								<button form="birthday_Update" type="submit" class="keep_size bg_white button_Day_Input">
+									<th:block th:if="*{birthday} == ''">　　　　　　</th:block>
+									[[*{birthday}]]
+								</button>
 							</td>
 						</tr>
 						<tr>
@@ -103,14 +97,15 @@
 							</td>
 							<td>
 								➡
-								<select th:field="*{move_in}">
-									<option value=""></option>
-									<option th:each="option : ${options.date}" th:value="${option}">[[${option}]]</option>
-								</select>
+								<input type="hidden" th:field="*{move_in}"/>
+								<button form="move_in_Update" type="submit" class="keep_size bg_white button_Day_Input">
+									<th:block th:if="*{move_in} == ''">　　　　　　</th:block>
+									[[*{move_in}]]
+								</button>
 							</td>
 						</tr>
 					</table>
-					<button form="detail_update" type="submit" class="btn btn-primary button-detail">
+					<button form="detail_Update" type="submit" class="btn btn-primary button-detail">
 						詳細情報更新
 					</button>
 				</form>

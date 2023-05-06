@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "office")
 public class Office {
 
   // ID
@@ -23,15 +23,12 @@ public class Office {
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
 
-  // 部屋番号
-  @Column(name = "room", nullable = false)
-  private Integer room;
+  // 項目
+  @Column(name = "item_name", nullable = false)
+  private String item_name;
 
-  // 名前
-  @Column(name = "name", nullable = false)
-  private String name;
+  // 内容
+  @Column(name = "item_value", nullable = false)
+  private String item_value;
 
-  // 利用状況
-  @Column(name = "use", nullable = false)
-  private String use;
 }

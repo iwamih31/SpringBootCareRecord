@@ -30,7 +30,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 				 + "  sleep = :sleep"
 				 + " where"
 				 + "  id = :id")
-		public Integer updateAction(
+		public Integer updateActio(
 				@Param("id") int id,
 				@Param("time") String time,
 				@Param("sleep") String sleep

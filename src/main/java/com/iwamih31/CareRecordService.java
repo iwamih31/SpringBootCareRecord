@@ -22,9 +22,11 @@ public class CareRecordService {
 	private DetailRepository detailRepository;
 	@Autowired
 	private ToDoRepository todoRepository;
+	@Autowired
+	private OfficeRepository officeRepository;
 
 
-	public List<User> userAll() {
+	public List<User> user_All() {
 		return userRepository.findAll();
 	}
 
@@ -37,13 +39,12 @@ public class CareRecordService {
 	}
 
 	public String user_Insert(User user, int id) {
-		System.out.println("userInsert開始");
+		__consoleOut__("user_Insert開始");
 		user.setId(id);
 		String message = "ID = " + user.getId() + " の利用者データ";
-		List<User>userList = new ArrayList<User>();
-		userList.add(user);
+
 		try {
-			userRepository.saveAllAndFlush(userList);
+			userRepository.save(user);
 			message += " を登録しました";
 			//詳細情報初期化
 			Detail detail = new Detail(id, "", "", "");
@@ -51,12 +52,26 @@ public class CareRecordService {
 		} catch (Exception e) {
 			message += "登録に失敗しました " + e.getMessage();
 		}
-		System.out.println("userInsert終了");
+		__consoleOut__("user_Insert終了");
+		return message;
+	}
+
+	public String office_Insert(Office office, int id) {
+		__consoleOut__("office_Insert開始");
+		office.setId(id);
+		String message = "ID = " + office.getId() + " の事業所データ";
+		try {
+			officeRepository.save(office);
+			message += " を登録しました";
+		} catch (Exception e) {
+			message += "登録に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("office_Insert終了");
 		return message;
 	}
 
 	public String user_Update(User user, int id) {
-		System.out.println("userUpdate開始");
+		__consoleOut__("user_Update開始");
 		user.setId(id);
 		String message = "ID = " + user.getId() + " の利用者データ";
 		List<User>userList = new ArrayList<User>();
@@ -67,19 +82,22 @@ public class CareRecordService {
 		} catch (Exception e) {
 			message += "更新に失敗しました " + e.getMessage();
 		}
-		System.out.println("userUpdate終了");
+		__consoleOut__("user_Update終了");
 		return message;
 	}
 
-	public int nextUserID() {
-		List<User> userList = userRepository.findAll();
-		int userListSize = userList.size();
-		int lastId = 0;
-		if (userList.size() > 0) {
-			lastId = userList.get(userListSize - 1).getId();
+	public String office_Update(Office office, int id) {
+		__consoleOut__("office_Update開始");
+		office.setId(id);
+		String message = "ID = " + office.getId() + " の事業所データ";
+		try {
+			officeRepository.save(office);
+			message += " を更新しました";
+		} catch (Exception e) {
+			message += "更新に失敗しました " + e.getMessage();
 		}
-		__consoleOut__("lastId = " + lastId);
-		return lastId + 1;
+		__consoleOut__("office_Update終了");
+		return message;
 	}
 
 	public Object action(int id) {
@@ -136,7 +154,7 @@ public class CareRecordService {
 	}
 
 	public Action insert_Action(int id, String date) {
-		System.out.println("insert_Action開始");
+		__consoleOut__("insert_Action開始");
 		return new Action(1, id,date, "", "", "", "", "", "", "", "", "", "" );
 	}
 
@@ -147,11 +165,13 @@ public class CareRecordService {
 	public Detail detail(int id) {
 		Detail detail = null;
 		if(detailRepository.existsById(id)) {
+			__consoleOut__("テーブル detail に Id(" + id + ") があります");
 			detail = detailRepository.getReferenceById(id);
 		} else {
 			__consoleOut__("テーブル detail に Id(" + id + ") がありません");
-			detail = new Detail(id, "", "", "");
+			detailRepository.save(new Detail(id, "", "", ""));
 		}
+		__consoleOut__("" + detail);
 		return detail;
 	}
 
@@ -163,7 +183,7 @@ public Object detailAll() {
 //		detail.setId(id);
 //		List<Detail>detailList = new ArrayList<Detail>();
 //		detailList.add(detail);
-//		System.out.println("detailUpdate開始");
+//		__consoleOut__("detailUpdate開始");
 //		String message = "";
 //		try {
 //			detailRepository.saveAll(detailList);
@@ -171,23 +191,21 @@ public Object detailAll() {
 //		} catch (Exception e) {
 //			message = "登録に失敗しました " + e.getMessage();
 //		}
-//		System.out.println("routineUpdate終了");
+//		__consoleOut__("routineUpdate終了");
 //		return message;
 //	}
 
 	public String detail_Update(Detail detail, int id) {
+		__consoleOut__("detail_Update開始 id = " + id +  detail);
 		detail.setId(id);
-		List<Detail>detailList = new ArrayList<Detail>();
-		detailList.add(detail);
-		System.out.println("detail_Update開始");
 		String message = "";
 		try {
-			detailRepository.saveAll(detailList);
+			detailRepository.save(detail);
 			message = "ID = " + detail.getId() + " の詳細データを更新しました";
 		} catch (Exception e) {
 			message = "登録に失敗しました " + e.getMessage();
 		}
-		System.out.println("routineUpdate終了");
+		__consoleOut__("detail_Update終了");
 		return message;
 	}
 
@@ -201,7 +219,7 @@ public Object detailAll() {
 		for (ToDo todo : todoList) {
 			List<User> userList = userList();
 			for (User user : userList) {
-				List<Routine> routineAll = routineAll();
+				List<Routine> routineAll = routine_All();
 				int lastRoutineID = 0;
 				if (routineAll.size() > 0) {
 					int lastRoutineNum = routineAll.size() - 1;
@@ -228,7 +246,7 @@ public Object detailAll() {
 		return routineRepository.routineList(date);
 	}
 
-	public List<Routine> routineAll() {
+	public List<Routine> routine_All() {
 		return routineRepository.findAll();
 	}
 
@@ -278,26 +296,31 @@ public Object detailAll() {
 		return options;
 	}
 
-	public String dateInputUrl(int count) {
-		String dateInputUrl = "/CareRecord/Birthday";
-		if (count == 3) dateInputUrl = "/CareRecord/BirthdayUpdate";
+	public String dateInputUrl(int count, int completion_count, String normal_Url, String completion_Url) {
+		String dateInputUrl = normal_Url;
+		if (count == completion_count) dateInputUrl = completion_Url;
 		return dateInputUrl;
 	}
 
-	public String dateInputLabel(int count) {
-		String data = null;
+	public String date_Input_Stage(int count) {
+		String stage = null;
 		switch(count) {
-			case 1:
-				data = "年";
-				break;
-			case 2:
-				data = "月";
-				break;
-			case 3:
-				data = "日にち";
-				break;
+		case 1:
+			stage = "年";
+			break;
+		case 2:
+			stage = "月";
+			break;
+		case 3:
+			stage = "日";
+			break;
 		}
-		return "生まれた" + data + "を選択して下さい";
+		return stage;
+	}
+
+	public String dateInputLabel(int count, String label_head) {
+		String stage = date_Input_Stage(count);
+		return label_head + stage + "を選択して下さい";
 	}
 
 	/** 年、月、日の順番で受け取ったそれぞれの数字の桁を合わせ/で繋げる */
@@ -352,18 +375,37 @@ public Object detailAll() {
 		return alignmentArray;
 	}
 
-	public void birthdayUpdate(int id, String string, String input) {
+	public void birthday_Update(int id, String string, String input) {
 		// 文字数が 2 になる様に input の前を "0" で埋める
 		input = stringAlignment(input, 2, "0");
 		String birthday = string + "/" + input;
 		__consoleOut__("birthday = " + birthday);
 		Detail detail;
+	// idが在れば birthday を書き換え 無ければ birthday 入りの detail を新規作成
 		if (detailRepository.existsById(id)) {
 			detail = detailRepository.getReferenceById(id);
 			detail.setBirthday(birthday);
 		} else {
 			detail = new Detail(id, birthday, "", "");
 		}
+		// save() 実行
+		detailRepository.save(detail);
+	}
+
+	public void move_in_Update(int id, String string, String input) {
+		// 文字数が 2 になる様に input の前を "0" で埋める
+		input = stringAlignment(input, 2, "0");
+		String move_in = string + "/" + input;
+		__consoleOut__("move_in = " + move_in);
+		Detail detail;
+		// idが在れば move_in を書き換え 無ければ move_in 入りの detail を新規作成
+		if (detailRepository.existsById(id)) {
+			detail = detailRepository.getReferenceById(id);
+			detail.setMove_in(move_in);
+		} else {
+			detail = new Detail(id, "", "", "move_in");
+		}
+		// save() 実行
 		detailRepository.save(detail);
 	}
 
@@ -394,7 +436,7 @@ public Object detailAll() {
 		routine.setId(id);
 		List<Routine>routineList = new ArrayList<Routine>();
 		routineList.add(routine);
-		System.out.println("routineUpdate開始");
+		__consoleOut__("routineUpdate開始");
 		String message = "";
 		try {
 			routineRepository.saveAll(routineList);
@@ -402,7 +444,7 @@ public Object detailAll() {
 		} catch (Exception e) {
 			message = "登録に失敗しました " + e.getMessage();
 		}
-		System.out.println("routineUpdate終了");
+		__consoleOut__("routineUpdate終了");
 		return message;
 	}
 
@@ -420,25 +462,58 @@ public Object detailAll() {
 		return blankRooms;
 	}
 
+	public int nextUserId() {
+		int nextId = 1;
+		User lastElement = getLastElement(userRepository.findAll());
+		if (lastElement != null) nextId = lastElement.getId() + 1;
+		__consoleOut__("nextId = " + nextId);
+		return nextId;
+	}
+
+	private Integer nextRoutineId() {
+		int nextId = 1;
+		Routine lastElement = getLastElement(routineRepository.findAll());
+		if (lastElement != null) nextId = lastElement.getId() + 1;
+		__consoleOut__("nextId = " + nextId);
+		return nextId;
+	}
+
+	public int nextOfficeId() {
+		int nextId = 1;
+		Office lastElement = getLastElement(officeRepository.findAll());
+		if (lastElement != null) nextId = lastElement.getId() + 1;
+		__consoleOut__("nextId = " + nextId);
+		return nextId;
+	}
+
 	public User newUser() {
-		User newUser = new User(nextUserID(),0, "","" );
-		return newUser;
+		return new User(nextUserId(),0, "","" );
 	}
 
 	public Routine newRoutine(String date) {
-		Routine newRoutine = new Routine(nextRoutineID(), date, "", "", 0, "", "");
-		return newRoutine;
+		return new Routine(nextRoutineId(), date, "", "", 0, "", "");
 	}
 
-	private Integer nextRoutineID() {
-		List<Routine> List = routineRepository.findAll();
-		int ListSize = List.size();
-		int lastId = 0;
-		if (List.size() > 0) {
-			lastId = List.get(ListSize - 1).getId();
+	public Office new_Office() {
+		Office new_Office = new Office(nextOfficeId(),"","" );
+		if (new_Office.getId() == 1) set_Office();
+		return  new Office(nextOfficeId(),"","" );
+	}
+
+	private void set_Office() {
+		String[] item_Names = office_Item_Names();
+		officeRepository.save(new Office(1, item_Names[0], ""));
+		officeRepository.save(new Office(2, item_Names[1], ""));
+	}
+
+	/** List の最後の Element を返すジェネリックメソッド */
+	public static <E> E getLastElement(List<E> list){
+		E lastElement = null;
+		if (list.size() > 0) {
+			int lastIdx = list.size() - 1;
+			lastElement = list.get(lastIdx);
 		}
-		__consoleOut__("lastId = " + lastId);
-		return lastId + 1;
+		return lastElement;
 	}
 
 	public String[] todo_actions() {
@@ -449,7 +524,7 @@ public Object detailAll() {
 		User user = user(id);
 		List<ToDo> todoList = todoList();
 		for (ToDo todo : todoList) {
-			int insertID = nextRoutineID();
+			int insertID = nextRoutineId();
 			__consoleOut__("insertID = " + insertID);
 			Routine routine = new Routine(
 					insertID,
@@ -503,6 +578,39 @@ public Object detailAll() {
 		}
 		__consoleOut__("action_Delete(int id)終了");
 		return message;
+	}
+
+	public List<Office> office_data() {
+		List<Office> office_data = office_All();
+		String[] item_Names = office_Item_Names();
+		for (int i = 0; i < office_data.size(); i++) {
+			for ( String item_Name : item_Names) {
+				String remove_Name = office_data.get(i).getItem_name();
+				if (remove_Name.equals(item_Name)) {
+					office_data.remove(i);
+					__consoleOut__(remove_Name + "を除外しました");
+				}
+			}
+		}
+		return office_data;
+	}
+
+	public String office_item_value (String item_name) {
+		return officeRepository.item_value(item_name);
+	}
+
+	public List<Office> office_All() {
+		if (nextOfficeId() == 1) set_Office();
+		return officeRepository.findAll();
+	}
+
+	public Office office(int id) {
+		return officeRepository.getReferenceById(id);
+	}
+
+	public String[] office_Item_Names() {
+		 String[] item_Names =  {"事業所名","部署名"};
+		return item_Names;
 	}
 
 }
