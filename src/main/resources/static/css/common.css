@@ -14,7 +14,7 @@ body {
 	text-align: center;
 }
 
-nav button {
+nav button, .btn {
 	margin: 0.2em;
 }
 
@@ -31,6 +31,11 @@ nav button {
 .flex_space_between {
 	display: flex;
 	justify-content:space-between;
+}
+
+.flex_space_around {
+	display: flex;
+	justify-content:space-around;
 }
 
 .flex {
@@ -52,7 +57,7 @@ nav button {
 .table-form select,
 .table-form input{
 	width: 100%;
-	height: 2em;
+	min-height: 2em;
 	text-align: center;
 	margin: 0;
 }
@@ -82,20 +87,42 @@ nav button {
 	width: 100%;
 }
 
+.event_insert input,
+.event_insert select,
+.event_insert textarea {
+	width: 100%;
+	min-height: 2em;
+}
+
 .center {
 	display:table;
 	margin: auto;
 	width: auto;
+
 }
 
-.detail {
+.detail,
+.vertical {
+	display:table;
 	margin: auto;
 	width: auto;
 	text-align: left;
 }
 
-.detail td {
+.detail td,
+.vertical td {
 	padding: 0.3em;
+}
+
+.vertical button {
+	display:table;
+	margin: auto;
+	width: auto;
+}
+
+.vertical textarea {
+	margin: auto;
+	width: inherit;
 }
 
 .user,
@@ -141,7 +168,11 @@ nav button {
 	color: red;
 }
 
-.font-size-large{
+.font-size-larger{
+	font-size: larger;
+}
+
+.font-size-x-large{
 	font-size: x-large;
 }
 
@@ -154,6 +185,10 @@ nav button {
 	min-height: 1.5em;
 }
 
+.event td{
+	min-width: 6em;
+}
+
 .button_Day_Input {
 	background-color: white;
 	min-width: 5em;
@@ -161,3 +196,10 @@ nav button {
 	border: solid thin;
 
 }
+
+._eventInsert button {
+	display:table;
+	margin: auto;
+	width: auto;
+}
+

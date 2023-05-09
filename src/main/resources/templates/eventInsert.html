@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<!-- library フラグメントの定義（JavaScript／CSS） -->
+	<th:block th:fragment="library">
+		<link rel="stylesheet" th:href="@{/css/user.css}">
+	</th:block>
+
+	<!--	main フラグメントの定義（メインコンテンツ）	-->
+	<div th:fragment="main">
+		<div class="header border-bottom">
+			<h1 class="h2">[[${title}]]</h1>
+		</div>
+		<!--	一覧表示	-->
+		<div class="_eventInsert">
+			<div class="flex">
+			<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
+			</div>
+			<form method="post" th:action="@{/CareRecord/Event/Insert}" class="" th:object="${event}">
+				<input type="hidden" name= "id" th:value="${id}"/>
+				<table class="detail font-size-larger">
+					<tr>
+						<td>
+							<label>ID :</label>
+						</td>
+						<td>
+							<input type="text" th:field="*{id}" disabled="disabled"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>行事名 :</label>
+						</td>
+						<td>
+							<input type="text" th:field="*{name}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>開催日時 :</label>
+						</td>
+						<td>
+							<input type="datetime-local" name= "date_time">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>内容 :</label>
+						</td>
+						<td>
+							<textarea th:field="*{detail}" rows="8" cols="35"></textarea>
+						</td>
+					</tr>
+
+				</table>
+				<button class="btn btn-primary" type="submit">
+					登録
+				</button>
+			</form>
+		</div>
+		<br>
+		<a th:href="@{/main}">メインページへ</a>
+	</div>
+</html>

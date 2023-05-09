@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<!-- library フラグメントの定義（JavaScript／CSS） -->
+	<th:block th:fragment="library">
+		<link rel="stylesheet" th:href="@{/css/user.css}">
+	</th:block>
+
+	<!--	main フラグメントの定義（メインコンテンツ）	-->
+	<div th:fragment="main">
+		<div class="header border-bottom">
+			<h1 class="h2">[[${title}]]</h1>
+		</div>
+		<!--	一覧表示	-->
+		<div>
+			<div class="text-align-center">
+				<form id="event_delete" method="post" th:action="@{/CareRecord/EventDelete}" class="event_delete">
+					<input type="hidden" name= "id" th:value="${id}"/>
+					<button form="event_delete" type="submit" class="btn btn-primary bg_red">
+						行事予定削除
+					</button>
+				</form>
+			</div>
+			<div class="vertical">
+				<form id="event_update" method="post" th:action="@{/CareRecord/Event/Update}" class="event_update" th:object="${event}">
+					<input type="hidden" name= "id" th:value="${id}"/>
+					<table class="font-size-larger">
+						<tbody>
+							<tr>
+								<td>
+									● ID :
+								</td>
+								<td>
+									<input type="text" th:field="*{id}" disabled="disabled"/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									● 行事名 :
+								</td>
+								<td>
+									<input type="text" th:field="*{name}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									● 開催日時 :
+								</td>
+								<td>
+									<input type="datetime-local" name="date_time" th:value="*{datetime}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									● 内容 :
+								</td>
+								<td>
+									<textarea rows="3" cols="40" th:field="*{detail}" ></textarea>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<button form="event_update" class="btn btn-primary" type="submit">
+						行事予定更新
+					</button>
+				</form>
+			</div>
+			<div class="vertical">
+				<form id="idea_Update" method="post" th:action="@{/CareRecord/IdeaUpdate}" class="idea_Update" th:object="${idea}">
+					<input type="hidden" name= "id" th:value="${id}"/>
+					<table class="">
+						<tr>
+							<td>
+								● 行事計画
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<textarea rows="8" cols="100" th:field="*{contents}" disabled="disabled"></textarea>
+							</td>
+						</tr>
+					</table>
+					<button form="idea_Update" type="submit" class="btn btn-primary button-detail">
+						行事計画編集
+					</button>
+				</form>
+			</div>
+		</div>
+		<br>
+		<a th:href="@{/main}">メインページへ</a>
+	</div>
+</html>

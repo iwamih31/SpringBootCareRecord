@@ -24,6 +24,10 @@ public class CareRecordService {
 	private ToDoRepository todoRepository;
 	@Autowired
 	private OfficeRepository officeRepository;
+	@Autowired
+	private EventRepository eventRepository;
+	@Autowired
+	private IdeaRepository ideaRepository;
 
 
 	public List<User> user_All() {
@@ -34,6 +38,41 @@ public class CareRecordService {
 		return userRepository.userList();
 	}
 
+	public Idea idea(int id) {
+		return ideaRepository.getReferenceById(id);
+	}
+
+	public Event event(int id) {
+		return eventRepository.getReferenceById(id);
+	}
+
+	public List<Event> eventList() {
+		LocalDateTime localDateTime = LocalDateTime.now().minusDays(1);
+		return eventRepository.eventList(localDateTime);
+	}
+
+	public List<Event> event_All() {
+		return eventRepository.eventList();
+	}
+
+	public String event_Insert(Event event, int id, String datetime_Str) {
+		__consoleOut__("event_Insert開始");
+		String message = "ID = " + event.getId() + " の行事予定";
+		try {
+			event.setId(id);
+			if (!datetime_Str.isBlank()) event.setDatetime(localDateTime(datetime_Str));
+			eventRepository.save(event);
+			message += " を登録しました";
+			//行事計画情報初期化
+			Idea idea = new Idea(id, "");
+			message += "　" + idea_Update(idea, id);
+		} catch (Exception e) {
+			message += "登録に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("event_Insert終了");
+		return message;
+	}
+
 	public User user(int id) {
 		return userRepository.getReferenceById(id);
 	}
@@ -42,13 +81,12 @@ public class CareRecordService {
 		__consoleOut__("user_Insert開始");
 		user.setId(id);
 		String message = "ID = " + user.getId() + " の利用者データ";
-
 		try {
 			userRepository.save(user);
 			message += " を登録しました";
 			//詳細情報初期化
 			Detail detail = new Detail(id, "", "", "");
-			message += "  " + detail_Update(detail, id);
+			message += "　" + detail_Update(detail, id);
 		} catch (Exception e) {
 			message += "登録に失敗しました " + e.getMessage();
 		}
@@ -179,34 +217,52 @@ public Object detailAll() {
 		return detailRepository.findAll();
 	}
 
-//	public String detailUpdate(Detail detail, int id) {
-//		detail.setId(id);
-//		List<Detail>detailList = new ArrayList<Detail>();
-//		detailList.add(detail);
-//		__consoleOut__("detailUpdate開始");
-//		String message = "";
-//		try {
-//			detailRepository.saveAll(detailList);
-//			message = "ID = " + detail.getId() + " のデータを更新しました";
-//		} catch (Exception e) {
-//			message = "登録に失敗しました " + e.getMessage();
-//		}
-//		__consoleOut__("routineUpdate終了");
-//		return message;
-//	}
-
 	public String detail_Update(Detail detail, int id) {
 		__consoleOut__("detail_Update開始 id = " + id +  detail);
 		detail.setId(id);
-		String message = "";
+		String message = "ID = " + detail.getId() + " の詳細データ";
 		try {
 			detailRepository.save(detail);
-			message = "ID = " + detail.getId() + " の詳細データを更新しました";
+			message += "を更新しました";
 		} catch (Exception e) {
-			message = "登録に失敗しました " + e.getMessage();
+			message += "登録に失敗しました " + e.getMessage();
 		}
 		__consoleOut__("detail_Update終了");
 		return message;
+	}
+
+	public String idea_Update(Idea idea, int id) {
+		__consoleOut__("idea_Update開始 id = " + id +  idea);
+		idea.setId(id);
+		String message = "ID = " + idea.getId() + " の行事計画データ";
+		try {
+			ideaRepository.save(idea);
+			message += "を更新しました";
+		} catch (Exception e) {
+			message += "登録に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("idea_Update終了");
+		return message;
+	}
+
+	public String event_Update(Event event, int id, String datetime_Str) {
+		__consoleOut__("event_Update開始 " +  event);
+		String message = "ID = " + event.getId() + " の行事予定データ";
+		try {
+			event.setId(id);
+			if (!datetime_Str.isBlank()) event.setDatetime(localDateTime(datetime_Str));
+			eventRepository.save(event);
+			message += "を更新しました";
+		} catch (Exception e) {
+			message += "登録に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("event_Update終了");
+		return message;
+	}
+
+	private LocalDateTime localDateTime(String datetime_Str) {
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		return LocalDateTime.parse(datetime_Str, formatter);
 	}
 
 	/** 利用者情報データをExcelとして出力 */
@@ -462,7 +518,7 @@ public Object detailAll() {
 		return blankRooms;
 	}
 
-	public int nextUserId() {
+	public int next_User_Id() {
 		int nextId = 1;
 		User lastElement = getLastElement(userRepository.findAll());
 		if (lastElement != null) nextId = lastElement.getId() + 1;
@@ -470,7 +526,7 @@ public Object detailAll() {
 		return nextId;
 	}
 
-	private Integer nextRoutineId() {
+	private Integer next_Routine_Id() {
 		int nextId = 1;
 		Routine lastElement = getLastElement(routineRepository.findAll());
 		if (lastElement != null) nextId = lastElement.getId() + 1;
@@ -478,7 +534,7 @@ public Object detailAll() {
 		return nextId;
 	}
 
-	public int nextOfficeId() {
+	public int next_Office_Id() {
 		int nextId = 1;
 		Office lastElement = getLastElement(officeRepository.findAll());
 		if (lastElement != null) nextId = lastElement.getId() + 1;
@@ -486,18 +542,30 @@ public Object detailAll() {
 		return nextId;
 	}
 
-	public User newUser() {
-		return new User(nextUserId(),0, "","" );
+	public int next_Event_Id() {
+		int nextId = 1;
+		Event lastElement = getLastElement(eventRepository.findAll());
+		if (lastElement != null) nextId = lastElement.getId() + 1;
+		__consoleOut__("nextId = " + nextId);
+		return nextId;
 	}
 
-	public Routine newRoutine(String date) {
-		return new Routine(nextRoutineId(), date, "", "", 0, "", "");
+	public User new_User() {
+		return new User(next_User_Id(),0, "","" );
+	}
+
+	public Routine new_Routine(String date) {
+		return new Routine(next_Routine_Id(), date, "", "", 0, "", "");
 	}
 
 	public Office new_Office() {
-		Office new_Office = new Office(nextOfficeId(),"","" );
+		Office new_Office = new Office(next_Office_Id(),"","" );
 		if (new_Office.getId() == 1) set_Office();
-		return  new Office(nextOfficeId(),"","" );
+		return  new Office(next_Office_Id(),"","" );
+	}
+
+	public Object new_Event() {
+		return new Event(next_Event_Id(), "", null, "");
 	}
 
 	private void set_Office() {
@@ -524,7 +592,7 @@ public Object detailAll() {
 		User user = user(id);
 		List<ToDo> todoList = todoList();
 		for (ToDo todo : todoList) {
-			int insertID = nextRoutineId();
+			int insertID = next_Routine_Id();
 			__consoleOut__("insertID = " + insertID);
 			Routine routine = new Routine(
 					insertID,
@@ -600,7 +668,7 @@ public Object detailAll() {
 	}
 
 	public List<Office> office_All() {
-		if (nextOfficeId() == 1) set_Office();
+		if (next_Office_Id() == 1) set_Office();
 		return officeRepository.findAll();
 	}
 
@@ -611,6 +679,30 @@ public Object detailAll() {
 	public String[] office_Item_Names() {
 		 String[] item_Names =  {"事業所名","部署名"};
 		return item_Names;
+	}
+
+	public Object date(String date) {
+		if (date == null) date = today();
+		return date;
+	}
+
+	public String event_Copy(int id) {
+		String message = "ID = " + id + " の";
+		try {
+			int next_Id = next_Event_Id();
+			Event originalE = eventRepository.getReferenceById(id);
+			Event event = new Event(next_Id, originalE.getName(), originalE.getDatetime(), originalE.getDetail());
+			eventRepository.save(event);
+			message += "行事予定を複製しました 行事計画の";
+			Idea originalI = ideaRepository.getReferenceById(id);
+			Idea idea = new Idea(next_Id, originalI.getContents());
+			ideaRepository.save(idea);
+			message += "複製も行いました ";
+		} catch (Exception e) {
+			message += "複製に失敗しました " + e.getMessage() ;
+		}
+
+		return message;
 	}
 
 }

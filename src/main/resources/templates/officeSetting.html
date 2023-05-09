@@ -21,8 +21,8 @@
 				</a>
 				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
-				<table class="detail font-size-large">
-			<th:block th:each="office : ${officeList}" th:object="${office}">
+			<table class="detail font-size-x-large">
+				<th:block th:each="office : ${officeList}" th:object="${office}">
 					<tr>
 						<td>
 							[[*{id}]]
@@ -42,8 +42,8 @@
 							</form>
 						</td>
 					</tr>
-			</th:block>
-				</table>
+				</th:block>
+			</table>
 		</div>
 		<br>
 		<a th:href="@{/main}">メインページへ</a>

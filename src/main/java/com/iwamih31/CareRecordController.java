@@ -73,11 +73,127 @@ public class CareRecordController {
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")開始");
 		add_View_Data_(model, "userInsert", "新規利用者登録");
-		model.addAttribute("user", careRecordService.newUser());
-		model.addAttribute("id", careRecordService.nextUserId());
+		model.addAttribute("user", careRecordService.new_User());
+		model.addAttribute("id", careRecordService.next_User_Id());
 		model.addAttribute("blankRooms", careRecordService.blankRooms());
 		model.addAttribute("options", careRecordService.options());
 		careRecordService.__consoleOut__("@GetMapping(\"/UserInsert\")終了");
+		return "view";
+	}
+
+	@GetMapping("/EventList")
+	public String eventList(
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/EventList\")開始");
+		add_View_Data_(model, "eventList", "行事予定一覧");
+		model.addAttribute("eventList", careRecordService.eventList());
+		careRecordService.__consoleOut__("@GetMapping(\"/EventList\")終了");
+		return "view";
+	}
+
+	@GetMapping("/EventSetting")
+	public String eventSetting(
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/EventSetting\")開始");
+		add_View_Data_(model, "eventSetting", "行事設定");
+		model.addAttribute("eventList", careRecordService.event_All());
+		careRecordService.__consoleOut__("@GetMapping(\"/EventSetting\")終了");
+		return "view";
+	}
+
+	@GetMapping("/EventInsert")
+	public String eventInsert(
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/EventInsert\")開始");
+		add_View_Data_(model, "eventInsert", "新規行事登録");
+		model.addAttribute("event", careRecordService.new_Event());
+		model.addAttribute("id", careRecordService.next_Event_Id());
+		model.addAttribute("options", careRecordService.options());
+		careRecordService.__consoleOut__("@GetMapping(\"/EventInsert\")終了");
+		return "view";
+	}
+
+	@PostMapping("/Event/Insert")
+	public String event_Insert(
+			@RequestParam("id")int id,
+			@RequestParam("date_time")String date_time,
+			@ModelAttribute("event")Event event,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Insert\")開始");
+		String message = careRecordService.event_Insert(event, id, date_time);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Insert\")終了");
+		return "redirect:/CareRecord/EventSetting";
+	}
+
+	@PostMapping("/Event")
+	public String event(
+			@RequestParam("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/Event\")開始 ");
+		add_View_Data_(model, "event", "行事予定");
+		model.addAttribute("id", id);
+		model.addAttribute("event", careRecordService.event(id));
+		model.addAttribute("idea", careRecordService.idea(id));
+		careRecordService.__consoleOut__("@GetMapping(\"/Event\")終了");
+		return "view";
+	}
+	
+	@PostMapping("/EventUpdate")
+	public String eventUpdate(
+			@RequestParam("id")int id
+			) {
+		careRecordService.__consoleOut__("@PostMapping(\"/EventUpdate\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/EventUpdate\")終了");
+		return "redirect:/CareRecord/EventUpdate?id=" + id;
+	}
+
+	@GetMapping("/EventUpdate")
+	public String eventUpdate(
+			@Param("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/EventUpdate\")開始 ");
+		add_View_Data_(model, "eventUpdate", "行事予定更新");
+		model.addAttribute("id", id);
+		model.addAttribute("event", careRecordService.event(id));
+		model.addAttribute("idea", careRecordService.idea(id));
+		careRecordService.__consoleOut__("@GetMapping(\"/EventUpdate\")終了");
+		return "view";
+	}
+
+	@PostMapping("/Event/Update")
+	public String event_Update(
+			@RequestParam("id")int id,
+			@RequestParam("date_time")String date_time,
+			@ModelAttribute("idea")Event event,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Update\")開始");
+		String message = careRecordService.event_Update(event, id, date_time);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Update\")終了");
+		return "redirect:/CareRecord/EventSetting";
+	}
+
+	@PostMapping("/Event/Copy")
+	public String event_Copy(
+			@RequestParam("id")int id,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Copy\")開始");
+		String message = careRecordService.event_Copy(id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Copy\")終了");
+		return "redirect:/CareRecord/EventSetting";
+	}
+
+	@PostMapping("/Idea")
+	public String idea(
+			@RequestParam("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/Idea\")開始 ");
+		add_View_Data_(model, "idea", "行事計画");
+		model.addAttribute("id", id);
+		model.addAttribute("idea", careRecordService.idea(id));
+		careRecordService.__consoleOut__("@GetMapping(\"/Idea\")終了");
 		return "view";
 	}
 
@@ -133,23 +249,23 @@ public class CareRecordController {
 	public String office(
 			@Param("date")String date,
 			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/Detail\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/Office\")開始");
 		add_View_Data_(model, "office", "事業所情報");
 		String[] item_Names = careRecordService.office_Item_Names();
 		model.addAttribute("name", item_Names[0]);
 		model.addAttribute("department", item_Names[1]);
 		model.addAttribute("office_data", careRecordService.office_All());
-		careRecordService.__consoleOut__("@GetMapping(\"/Detail\")終了");
+		careRecordService.__consoleOut__("@GetMapping(\"/Office\")終了");
 		return "view";
 	}
 
 	@GetMapping("/OfficeSetting")
 	public String officeSetting(
 			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserSetting\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/OfficeSetting\")開始");
 		add_View_Data_(model, "officeSetting", "事業所設定");
 		model.addAttribute("officeList", careRecordService.office_All());
-		careRecordService.__consoleOut__("@GetMapping(\"/UserSetting\")終了");
+		careRecordService.__consoleOut__("@GetMapping(\"/OfficeSetting\")終了");
 		return "view";
 	}
 
@@ -159,7 +275,7 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("@GetMapping(\"/OfficeInsert\")開始");
 		add_View_Data_(model, "officeInsert", "新規項目追加");
 		model.addAttribute("office", careRecordService.new_Office());
-		model.addAttribute("next_id", careRecordService.nextOfficeId());
+		model.addAttribute("next_id", careRecordService.next_Office_Id());
 		careRecordService.__consoleOut__("@GetMapping(\"/OfficeInsert\")終了");
 		return "view";
 	}
@@ -378,6 +494,18 @@ public class CareRecordController {
 		return "redirect:/CareRecord/UserUpdate?id=" + id;
 	}
 
+	@PostMapping("/Idea/Update")
+	public String idea_Update(
+			@RequestParam("id")int id,
+			@ModelAttribute("idea")Idea idea,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Idea/Update\")開始");
+		String message = careRecordService.idea_Update(idea, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Idea/Update\")終了");
+		return "redirect:/CareRecord/EventUpdate?id=" + id;
+	}
+
 	@PostMapping("/RoutineList")
 	public String routineList(
 			@RequestParam("date")String date) {
@@ -459,7 +587,7 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("@PostMapping(\"/RoutineInsert\")開始");
 		add_View_Data_(model, "routineInsert", "定期入力新規データ作成");
 		model.addAttribute("date", date);
-		model.addAttribute("routine", careRecordService.newRoutine(date));
+		model.addAttribute("routine", careRecordService.new_Routine(date));
 		model.addAttribute("todo_actions", careRecordService.todo_actions());
 		model.addAttribute("names", careRecordService.names());
 		model.addAttribute("options", careRecordService.options());
@@ -590,6 +718,18 @@ public class CareRecordController {
 		model.addAttribute("todo", careRecordService.todo(id));
 		model.addAttribute("options", careRecordService.options());
 		careRecordService.__consoleOut__("@PostMapping(\"/ToDoUpdate\")終了");
+		return "view";
+	}
+
+	@PostMapping("/IdeaUpdate")
+	public String ideaUpdate(
+			@RequestParam("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/IdeaUpdate\")開始");
+		add_View_Data_(model, "ideaUpdate", "行事計画更新");
+		model.addAttribute("id", id);
+		model.addAttribute("idea", careRecordService.idea(id));
+		careRecordService.__consoleOut__("@PostMapping(\"/IdeaUpdate\")終了");
 		return "view";
 	}
 
