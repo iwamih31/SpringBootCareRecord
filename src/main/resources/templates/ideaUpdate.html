@@ -21,20 +21,23 @@
 				<table class="table table-striped table-bordered table-hover text-align-center">
 					<thead class="thead-light">
 						<tr>
-							<th class="th-width">行事計画</th>
+							<th class="th-width font-size-larger">
+								行事計画　
+								<button type="submit" class="btn btn-primary">
+										更新する
+								</button>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td>
-								<textarea rows="17" cols="110" th:field="*{contents}"></textarea>
+								<textarea rows="16" cols="110" th:field="*{contents}"></textarea>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<button type="submit" class="btn btn-primary">
-									更新
-								</button>
+
 							</td>
 						</tr>
 					</tbody>

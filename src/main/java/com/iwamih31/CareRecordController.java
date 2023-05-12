@@ -83,6 +83,54 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/User/Insert")
+	public String user_Insert(
+			@RequestParam("post_id")int id,
+			@ModelAttribute("user")User user,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/User/Insert\")開始");
+		String message = careRecordService.user_Insert(user, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/User/Insert\")終了");
+		return "redirect:/CareRecord/UserSetting";
+	}
+
+	@PostMapping("/UserUpdate")
+		public String userUpdate(
+				@RequestParam("id")int id
+	) {
+			careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")開始");
+			careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")終了");
+			return "redirect:/CareRecord/UserUpdate?id=" + id;
+		}
+
+	@GetMapping("/UserUpdate")
+	public String userUpdate(
+			@Param("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/UserUpdate\")開始");
+		add_View_Data_(model, "userUpdate", "利用者情報更新");
+		model.addAttribute("id", id);
+		model.addAttribute("user", careRecordService.user(id));
+		model.addAttribute("detail", careRecordService.detail(id));
+		model.addAttribute("blankRooms", careRecordService.blankRooms());
+		model.addAttribute("options", careRecordService.options());
+		careRecordService.__consoleOut__("@GetMapping(\"/UserUpdate\")終了");
+		return "view";
+	}
+
+	@PostMapping("/User/Update")
+	public String user_Update(
+			@RequestParam("post_id")int id,
+			@ModelAttribute("user")User user,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/User/Update\")開始");
+		String message = careRecordService.user_Update(user, id);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/User/Update\")終了");
+		return "redirect:/CareRecord/UserSetting";
+	}
+
 	@GetMapping("/EventList")
 	public String eventList(
 			Model model) {
@@ -117,12 +165,11 @@ public class CareRecordController {
 
 	@PostMapping("/Event/Insert")
 	public String event_Insert(
-			@RequestParam("id")int id,
 			@RequestParam("date_time")String date_time,
 			@ModelAttribute("event")Event event,
 			RedirectAttributes redirectAttributes) {
 		careRecordService.__consoleOut__("@PostMapping(\"/Event/Insert\")開始");
-		String message = careRecordService.event_Insert(event, id, date_time);
+		String message = careRecordService.event_Insert(event, date_time);
 		redirectAttributes.addFlashAttribute("message", message);
 		careRecordService.__consoleOut__("@PostMapping(\"/Event/Insert\")終了");
 		return "redirect:/CareRecord/EventSetting";
@@ -167,10 +214,43 @@ public class CareRecordController {
 	public String event_Update(
 			@RequestParam("id")int id,
 			@RequestParam("date_time")String date_time,
-			@ModelAttribute("idea")Event event,
+			@ModelAttribute("event")Event event,
 			RedirectAttributes redirectAttributes) {
 		careRecordService.__consoleOut__("@PostMapping(\"/Event/Update\")開始");
 		String message = careRecordService.event_Update(event, id, date_time);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Update\")終了");
+		return "redirect:/CareRecord/EventSetting";
+	}
+
+	@PostMapping("/EventDelete")
+	public String eventDelete(
+			@RequestParam("id")int id
+			) {
+		careRecordService.__consoleOut__("@PostMapping(\"/EventDelete\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/EventDelete\")終了");
+		return "redirect:/CareRecord/EventDelete?id=" + id;
+	}
+
+	@GetMapping("/EventDelete")
+	public String eventDelete(
+			@Param("id")int id,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/EventDelete\")開始 ");
+		add_View_Data_(model, "eventDelete", "行事予定削除");
+		model.addAttribute("id", id);
+		model.addAttribute("event", careRecordService.event(id));
+		model.addAttribute("idea", careRecordService.idea(id));
+		careRecordService.__consoleOut__("@GetMapping(\"/EventDelete\")終了");
+		return "view";
+	}
+
+	@PostMapping("/Event/Delete")
+	public String event_Delete(
+			@RequestParam("id")int id,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Event/Update\")開始");
+		String message = careRecordService.event_Delete(id);
 		redirectAttributes.addFlashAttribute("message", message);
 		careRecordService.__consoleOut__("@PostMapping(\"/Event/Update\")終了");
 		return "redirect:/CareRecord/EventSetting";
@@ -197,54 +277,6 @@ public class CareRecordController {
 		model.addAttribute("idea", careRecordService.idea(id));
 		careRecordService.__consoleOut__("@GetMapping(\"/Idea\")終了");
 		return "view";
-	}
-
-	@PostMapping("/User/Insert")
-	public String user_Insert(
-			@RequestParam("post_id")int id,
-			@ModelAttribute("user")User user,
-			RedirectAttributes redirectAttributes) {
-		careRecordService.__consoleOut__("@PostMapping(\"/User/Insert\")開始");
-		String message = careRecordService.user_Insert(user, id);
-		redirectAttributes.addFlashAttribute("message", message);
-		careRecordService.__consoleOut__("@PostMapping(\"/User/Insert\")終了");
-		return "redirect:/CareRecord/UserSetting";
-	}
-
-	@PostMapping("/UserUpdate")
-	public String userUpdate(
-			@RequestParam("id")int id
-) {
-		careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")開始");
-		careRecordService.__consoleOut__("@PostMapping(\"/UserUpdate\")終了");
-		return "redirect:/CareRecord/UserUpdate?id=" + id;
-	}
-
-	@GetMapping("/UserUpdate")
-	public String userUpdate(
-			@Param("id")int id,
-			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/UserUpdate\")開始");
-		add_View_Data_(model, "userUpdate", "利用者情報更新");
-		model.addAttribute("id", id);
-		model.addAttribute("user", careRecordService.user(id));
-		model.addAttribute("detail", careRecordService.detail(id));
-		model.addAttribute("blankRooms", careRecordService.blankRooms());
-		model.addAttribute("options", careRecordService.options());
-		careRecordService.__consoleOut__("@GetMapping(\"/UserUpdate\")終了");
-		return "view";
-	}
-
-	@PostMapping("/User/Update")
-	public String user_Update(
-			@RequestParam("post_id")int id,
-			@ModelAttribute("user")User user,
-			RedirectAttributes redirectAttributes) {
-		careRecordService.__consoleOut__("@PostMapping(\"/User/Update\")開始");
-		String message = careRecordService.user_Update(user, id);
-		redirectAttributes.addFlashAttribute("message", message);
-		careRecordService.__consoleOut__("@PostMapping(\"/User/Update\")終了");
-		return "redirect:/CareRecord/UserSetting";
 	}
 
 	@GetMapping("/Office")

@@ -50,6 +50,10 @@ nav button, .btn {
 	 text-align: center;
 }
 
+.text-align-left {
+	 text-align: left;
+}
+
 .table-clickable td {
 	padding: 0px;
 }

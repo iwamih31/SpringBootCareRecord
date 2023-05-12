@@ -17,16 +17,8 @@
 			<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
 			<form method="post" th:action="@{/CareRecord/Event/Insert}" class="" th:object="${event}">
-				<input type="hidden" name= "id" th:value="${id}"/>
+				<input type="hidden" th:field="*{id}"/>
 				<table class="detail font-size-larger">
-					<tr>
-						<td>
-							<label>ID :</label>
-						</td>
-						<td>
-							<input type="text" th:field="*{id}" disabled="disabled"/>
-						</td>
-					</tr>
 					<tr>
 						<td>
 							<label>行事名 :</label>

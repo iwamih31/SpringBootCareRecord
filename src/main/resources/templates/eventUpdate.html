@@ -13,7 +13,10 @@
 		</div>
 		<!--	一覧表示	-->
 		<div>
-			<div class="text-align-center">
+			<div class="center">
+				<button form="event_update" class="btn btn-primary" type="submit">
+					行事予定更新
+				</button>
 				<form id="event_delete" method="post" th:action="@{/CareRecord/EventDelete}" class="event_delete">
 					<input type="hidden" name= "id" th:value="${id}"/>
 					<button form="event_delete" type="submit" class="btn btn-primary bg_red">
@@ -58,31 +61,26 @@
 									<textarea rows="3" cols="40" th:field="*{detail}" ></textarea>
 								</td>
 							</tr>
+							<tr>
+								<td>
+									● 行事計画 :
+								</td>
+								<td>
+									<button form="idea_Update" type="submit" class="btn btn-primary">
+										行事計画編集
+									</button>
+								</td>
+							</tr>
 						</tbody>
 					</table>
-					<button form="event_update" class="btn btn-primary" type="submit">
-						行事予定更新
-					</button>
 				</form>
 			</div>
-			<div class="vertical">
+			<div class="center">
 				<form id="idea_Update" method="post" th:action="@{/CareRecord/IdeaUpdate}" class="idea_Update" th:object="${idea}">
 					<input type="hidden" name= "id" th:value="${id}"/>
-					<table class="">
-						<tr>
-							<td>
-								● 行事計画
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<textarea rows="8" cols="100" th:field="*{contents}" disabled="disabled"></textarea>
-							</td>
-						</tr>
-					</table>
-					<button form="idea_Update" type="submit" class="btn btn-primary button-detail">
-						行事計画編集
-					</button>
+					<div>
+						<textarea rows="6" cols="65" th:field="*{contents}" disabled="disabled"></textarea>
+					</div>
 				</form>
 			</div>
 		</div>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<!-- library フラグメントの定義（JavaScript／CSS） -->
+	<th:block th:fragment="library">
+		<link rel="stylesheet" th:href="@{/css/user.css}">
+	</th:block>
+
+	<!--	main フラグメントの定義（メインコンテンツ）	-->
+	<div th:fragment="main">
+		<div class="header border-bottom">
+			<h1 class="h2">[[${title}]]</h1>
+		</div>
+		<!--	一覧表示	-->
+		<div>
+			<div class="center">
+				<div class="color_red">＊下記データを本当に削除してもよろしいですか。</div>
+				<form id="event_delete" method="post" th:action="@{/CareRecord/Event/Delete}" class="event_delete">
+					<input type="hidden" name= "id" th:value="${id}"/>
+					<button form="event_delete" type="submit" class="btn btn-primary bg_red">
+						削除実行
+					</button>
+				</form>
+			</div>
+			<div class="center">
+				<table class="table table-striped table-bordered table-hover">
+					<thead class="thead-light">
+						<tr>
+							<th class="th-width">ID</th>
+							<th class="th-width">日付</th>
+							<th class="th-width">時間</th>
+							<th class="th-width">行事名</th>
+							<th class="th-width">内容</th>
+							<th class="th-width"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:object="${event}">
+							<td>[[*{id}]]</td>
+							<td>
+								<th:block th:if="*{datetime} != null">
+									[[*{#temporals.format(datetime, 'yyyy/MM/dd')}]]
+								</th:block>
+							</td>
+							<td>
+								<th:block th:if="*{datetime} != null">
+									[[*{#temporals.format(datetime, 'HH:mm')}]]
+								</th:block>
+							</td>
+							<td>[[*{name}]]</td>
+							<td>[[*{detail}]]</td>
+							<td>
+								<form th:id="update" method="post" th:action="@{/CareRecord/EventUpdate}">
+									<input type="hidden" name="id" th:value="*{id}" />
+									<button th:form="update" type="submit" class="btn btn-primary">
+										編集画面に戻る
+									</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="vertical">
+				<form id="idea_Update" method="post" th:action="@{/CareRecord/IdeaUpdate}" class="idea_Update" th:object="${idea}">
+					<input type="hidden" name= "id" th:value="${id}"/>
+					<table>
+						<tr>
+							<td class="font-size-larger">
+								● 行事計画
+							</td>
+						</tr>
+						<tr>
+							<td>
+								[[*{contents}]]
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+		<br>
+		<a th:href="@{/main}">メインページへ</a>
+	</div>
+</html>

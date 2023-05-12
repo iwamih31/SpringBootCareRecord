@@ -70,19 +70,19 @@ public class CareRecordService {
 		return eventRepository.eventList();
 	}
 
-	public String event_Insert(Event event, int id, String datetime_Str) {
+	public String event_Insert(Event event, String datetime_Str) {
 		__consoleOut__("event_Insert開始");
-		String message = "ID = " + event.getId() + " の行事予定";
+		String message = "行事予定";
 		try {
-			event.setId(id);
 			if (!datetime_Str.isBlank()) event.setDatetime(localDateTime(datetime_Str));
-			eventRepository.save(event);
-			message += " を登録しました";
+			event = eventRepository.save(event);
+			Integer event_Id = event.getId();
+			message = "ID = " + event_Id + " の行事予定を登録しました";
 			//行事計画情報初期化
-			Idea idea = new Idea(id, "");
-			message += "　" + idea_Update(idea, id);
+			Idea idea = new Idea(event_Id, "");
+			message += "　" + idea_Update(idea, event_Id);
 		} catch (Exception e) {
-			message += "登録に失敗しました " + e.getMessage();
+			message += "行事予定の登録が正常に行われませんでした " + e.getMessage();
 		}
 		__consoleOut__("event_Insert終了");
 		return message;
@@ -649,6 +649,19 @@ public  List<Detail> detailAll() {
 			message += "削除に失敗しました " + e.getMessage();
 		}
 		__consoleOut__("action_Delete(int id)終了");
+		return message;
+	}
+
+	public String event_Delete(int id) {
+		__consoleOut__("event_Delete(int id)開始");
+		String message = "ID = " + id + " のデータ";
+		try {
+			eventRepository.deleteById(id);
+			message += "を削除しました";
+		} catch (Exception e) {
+			message += "削除に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("event_Delete(int id)終了");
 		return message;
 	}
 
