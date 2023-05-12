@@ -1,5 +1,7 @@
 package com.iwamih31;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -138,7 +140,7 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("@GetMapping(\"/Event\")終了");
 		return "view";
 	}
-	
+
 	@PostMapping("/EventUpdate")
 	public String eventUpdate(
 			@RequestParam("id")int id
@@ -429,20 +431,22 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/Detail/Output/Excel")
+	public String detail_Output_Excel(
+			HttpServletResponse httpServletResponse,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Detail/Output/Excel\")開始");
+		String message = careRecordService.detail_Output_Excel(httpServletResponse);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Detail/Output/Excel\")終了");
+		return "redirect:/CareRecord/DetailList";
+	}
+
 	@PostMapping("/DetailSetting")
 	public String detailSetting(
 			@RequestParam("id")int id) {
-		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")開始");
-		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")終了");
-		return "redirect:/CareRecord/DetailSetting?id=" + id;
-	}
-
-	@PostMapping("/Detail/Output/Excel")
-	public String detail_Output_Excel(
-			@RequestParam("id")int id) {
-		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")開始");
-		careRecordService.detail_Output_Excel();
-		careRecordService.__consoleOut__("@PostMapping(\"/Detail\")終了");
+		careRecordService.__consoleOut__("@PostMapping(\"/DetailSetting\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/DetailSetting\")終了");
 		return "redirect:/CareRecord/DetailSetting?id=" + id;
 	}
 

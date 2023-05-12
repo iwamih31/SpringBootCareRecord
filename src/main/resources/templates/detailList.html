@@ -14,11 +14,11 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex">
-				<a th:href="@{/CareRecord/Detail/Output/Excel}">
-					<button type="button" class="btn btn-primary margin_1em">
+				<form id="output" method="post" th:action="@{/CareRecord/Detail/Output/Excel}">
+					<button form="output" type="submit" class="btn btn-primary margin_1em">
 						Excelに出力
 					</button>
-				</a>
+				</form>
 				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
 			<table class="table table-striped table-bordered table-hover table-detail">

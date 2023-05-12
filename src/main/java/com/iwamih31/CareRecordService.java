@@ -1,10 +1,25 @@
 package com.iwamih31;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -213,7 +228,7 @@ public class CareRecordService {
 		return detail;
 	}
 
-public Object detailAll() {
+public  List<Detail> detailAll() {
 		return detailRepository.findAll();
 	}
 
@@ -263,11 +278,6 @@ public Object detailAll() {
 	private LocalDateTime localDateTime(String datetime_Str) {
 		DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 		return LocalDateTime.parse(datetime_Str, formatter);
-	}
-
-	/** 利用者情報データをExcelとして出力 */
-	public void detail_Output_Excel() {
-		// TODO 自動生成されたメソッド・スタブ
 	}
 
 	public void setRoutineList(String date) {
@@ -480,12 +490,6 @@ public Object detailAll() {
 
 	public Object todo(int id) {
 		return todoRepository.getReferenceById(id);
-	}
-
-	public void __consoleOut__(String message) {
-		System.out.println("");
-		System.out.println(message);
-		System.out.println("");
 	}
 
 	public String routineUpdate(Routine routine, int id) {
@@ -702,6 +706,86 @@ public Object detailAll() {
 			message += "複製に失敗しました " + e.getMessage() ;
 		}
 
+		return message;
+	}
+
+	public void __consoleOut__(String message) {
+		System.out.println("");
+		System.out.println(message);
+		System.out.println("");
+	}
+
+	private String with_Now(String head_String) {
+		String now = now().replaceAll("[^0-9]", ""); // 現在日時の数字以外を "" に変換
+//	String now = now().replaceAll("[^\\d]", "");  ←こちらでもOK
+		now = now.substring(0, now.length()-3); // 後ろから3文字を取り除く
+		return head_String + now;
+	}
+
+	/** 利用者情報データをExcelとして出力 */
+	public String detail_Output_Excel(HttpServletResponse response) {
+		__consoleOut__("detail_Output_Excel(HttpServletResponse response) 開始");
+		String name_Head = "利用者情報";
+		String file_Name = with_Now(name_Head) + ".xlsx";
+		String sheet_Name = with_Now(name_Head);
+		String message = file_Name + " のダウンロード";
+		String[] label_Set = LabelSet.detail_List;
+		int[] width_Set = LabelSet.detail_List_width;
+		try (Workbook workbook = new XSSFWorkbook();
+        	OutputStream outputStream = response.getOutputStream()){
+			Sheet sheet = workbook.createSheet(sheet_Name);
+			// ヘッダー行
+			Row row = sheet.createRow(0);
+			for (int i = 0; i < label_Set.length; i++) {
+				Cell cell = row.createCell(i);
+				cell.setCellValue(label_Set[i]);
+				// セルスタイルを定義
+				CellStyle cellStyle = workbook.createCellStyle();
+				// 色指定
+				cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+				cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				// 罫線指定
+				cellStyle.setBorderTop(BorderStyle.THIN);
+				cellStyle.setBorderBottom(BorderStyle.THIN);
+				cellStyle.setBorderLeft(BorderStyle.THIN);
+				cellStyle.setBorderRight(BorderStyle.THIN);
+				// 中央揃え
+				cellStyle.setAlignment(HorizontalAlignment.CENTER);
+				// セルにセルスタイルを適用
+				cell.setCellStyle(cellStyle);
+				// 列幅設定（1文字分の横幅 × 文字数 ＋ 微調整分の幅）
+				sheet.setColumnWidth(i, 512 * width_Set[i] + 0);
+			}
+			// データ行
+			List<User> userList = user_All();
+			List<Detail> detailList = detailAll();
+			for (int i = 0; i < userList.size(); i++) {
+				User user = userList.get(i);
+				Detail detail = detailList.get(i);
+				row = sheet.createRow(i + 1);
+				row.createCell(0).setCellValue(user.getId());
+				row.createCell(1).setCellValue(user.getRoom());
+				row.createCell(2).setCellValue(user.getName());
+				row.createCell(3).setCellValue(detail.getBirthday());
+				row.createCell(4).setCellValue(detail.getLevel());
+				row.createCell(5).setCellValue(detail.getMove_in());
+				row.createCell(6).setCellValue(user.getUse());
+			}
+	    // ファイル名を指定して保存
+			String encodedFilename = URLEncoder.encode(file_Name, "UTF-8");
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+//	    response.setHeader("Content-Disposition", "attachment;filename*=\"UTF-8' " + encodedFilename + "\"");
+	    response.setHeader("Content-Disposition", "attachment;filename=\"" + encodedFilename + "\"");
+	    response.setCharacterEncoding("UTF-8");
+	    workbook.write(outputStream);
+			message = "が完了しました";
+			workbook.close();
+			message += " workbook を close() しました";
+		} catch (IOException e) {
+			message = "が正常に完了出来ませんでした";
+			__consoleOut__(e.getMessage());
+		}
+		__consoleOut__("detail_Output_Excel(HttpServletResponse response) 終了");
 		return message;
 	}
 

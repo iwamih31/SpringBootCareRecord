@@ -94,11 +94,16 @@ nav button, .btn {
 	min-height: 2em;
 }
 
-.center {
+.center2 {
 	display:table;
 	margin: auto;
 	width: auto;
+}
 
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .detail,
