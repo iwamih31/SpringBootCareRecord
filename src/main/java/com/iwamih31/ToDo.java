@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +21,14 @@ public class ToDo {
 
   // ID
   @Id
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @GeneratedValue(
+      strategy = GenerationType.SEQUENCE,
+      generator = "todo_id_seq")
+  @SequenceGenerator(
+      name = "todo_id_seq",
+      sequenceName = "todo_id_seq",
+      initialValue = 4,
+      allocationSize = 1)
   private Integer id;
 
   // 時間

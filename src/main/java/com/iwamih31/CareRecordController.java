@@ -29,7 +29,7 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")開始");
 		add_View_Data_(model, "userList", "利用者一覧");
 		model.addAttribute("date", careRecordService.today());
-		model.addAttribute("userList", careRecordService.userList());
+		model.addAttribute("userList", careRecordService.user_List());
 		careRecordService.__consoleOut__("@GetMapping(\"/UserList\")終了");
 		return "view";
 	}
@@ -57,13 +57,14 @@ public class CareRecordController {
 	public String user(
 			@Param("id")int id,
 			@Param("date")String date,
-			@ModelAttribute("action")Action action,
+
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")開始");
 		add_View_Data_(model, "user", "常時入力");
 		model.addAttribute("id", id);
 		model.addAttribute("date", date);
 		model.addAttribute("user", careRecordService.user(id));
+		model.addAttribute("action", careRecordService.new_Action());
 		model.addAttribute("actions", careRecordService.actions(id, date));
 		model.addAttribute("options", careRecordService.options());
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")終了");
@@ -350,6 +351,36 @@ public class CareRecordController {
 		return "redirect:/CareRecord/OfficeSetting";
 	}
 
+	@PostMapping("/ActionList")
+	public String actionList(
+			@RequestParam("user_id")String user_id,
+			@RequestParam("date_Like")String date_Like) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Action/Output/Excel\")開始");
+		if(date_Like == "0") date_Like = careRecordService.this_Month();
+		careRecordService.__consoleOut__("@PostMapping(\"/Action/Output/Excel\")終了");
+		return "redirect:/CareRecord/ActionList?user_id=" + user_id + "&date_Like=" + date_Like;
+	}
+
+	@GetMapping("/ActionList")
+	public String actionList(
+			@Param("user_id")int user_id,
+			@Param("date_Like")String date_Like,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionList\")開始");
+		careRecordService.__consoleOut__(user_id + date_Like);
+		add_View_Data_(model, "actionList", "常時入力データ印刷");
+		model.addAttribute("user_id", user_id);
+		model.addAttribute("date_Like", date_Like);
+		model.addAttribute("label_Set", LabelSet.action_Set);
+		model.addAttribute("user", careRecordService.user(user_id));
+		model.addAttribute("user_List", careRecordService.user_List());
+		model.addAttribute("action_list", careRecordService.action_List(user_id, date_Like));
+		model.addAttribute("options", careRecordService.options());
+		model.addAttribute("href", "/CareRecord/Action/Output/Excel");
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionList\")終了");
+		return "view";
+	}
+
 	@PostMapping("/Action/Insert")
 	public String action_Insert(
 			@RequestParam("user_id")int user_id,
@@ -426,6 +457,19 @@ public class CareRecordController {
 		return "redirect:/CareRecord/User?id=" + user_id + "&date=" + post_date;
 	}
 
+	@PostMapping("/Action/Output/Excel")
+	public String action_Output_Excel(
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date_Like")String date_Like,
+			HttpServletResponse httpServletResponse,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Action/Output/Excel\")開始");
+		String message = careRecordService.action_Output_Excel(user_id, date_Like, httpServletResponse);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Action/Output/Excel\")終了");
+		return "redirect:/CareRecord/ActionList?user_id=" + user_id + "&date_Like=" + date_Like;
+	}
+
 	@PostMapping("/Detail")
 	public String detail(
 			@RequestParam("id")int id,
@@ -458,10 +502,11 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("@GetMapping(\"/DetailList\")開始");
 		add_View_Data_(model, "detailList", "利用者情報印刷");
 		model.addAttribute("userList", careRecordService.user_All());
-		model.addAttribute("detailList", careRecordService.detailAll());
+		model.addAttribute("detailList", careRecordService.detail_All());
 		careRecordService.__consoleOut__("@GetMapping(\"/DetailList\")終了");
 		return "view";
 	}
+
 
 	@PostMapping("/Detail/Output/Excel")
 	public String detail_Output_Excel(
@@ -544,10 +589,11 @@ public class CareRecordController {
 
 	@PostMapping("/RoutineList")
 	public String routineList(
-			@RequestParam("date")String date) {
+			@RequestParam("year")String year,
+			@RequestParam("month_day")String month_day) {
 		careRecordService.__consoleOut__("@PostMapping(\"/RoutineList\")開始");
 		careRecordService.__consoleOut__("@PostMapping(\"/RoutineList\")終了");
-		return "redirect:/CareRecord/RoutineList?date=" + date;
+		return "redirect:/CareRecord/RoutineList?date=" + year + "/" + month_day;
 	}
 
 	@GetMapping("/RoutineList")
@@ -557,6 +603,7 @@ public class CareRecordController {
 		careRecordService.__consoleOut__("@GetMapping(\"/RoutineList\")開始");
 		if(date == null) date = careRecordService.today();
 		add_View_Data_(model, "routineList", "定期入力");
+		model.addAttribute("url", "/CareRecord/RoutineList");
 		model.addAttribute("date", date);
 		model.addAttribute("routineList", careRecordService.routineList(date));
 		model.addAttribute("options", careRecordService.options());
@@ -564,31 +611,91 @@ public class CareRecordController {
 		return "view";
 	}
 
-//	@PostMapping("/RoutineClicked")
-//	public String routineClicked(
-//			@RequestParam("id")int id,
-//			@RequestParam("date")String date) {
-//		careRecordService.__consoleOut__("@PostMapping(\"/RoutineClicked\")開始");
-//		careRecordService.__consoleOut__("@PostMapping(\"/RoutineClicked\"終了");
-//		return "redirect:/CareRecord/RoutineClicked?id=" + id + "&date=" + date;
-//	}
-//
-//	@GetMapping("/RoutineClicked")
-//	public String routineClicked(
-//			@Param("id")int id,
-//			@Param("date")String date,
-//			@ModelAttribute("routine")Routine routine,
-//			Model model) {
-//		careRecordService.__consoleOut__("@GetMapping(\"/RoutineClicked\")開始");
-//		if(date == null) date = careRecordService.today();
-//		add_View_Data_(model, "routineClicked", "定期入力");
-//		model.addAttribute("id", id);
-//		model.addAttribute("date", date);
-//		model.addAttribute("routineList", careRecordService.routineList(date));
-//		model.addAttribute("options", careRecordService.options());
-//		careRecordService.__consoleOut__("@GetMapping(\"/RoutineClicked\")終了");
-//		return "view";
-//	}
+	@PostMapping("/Routine/Output/Excel")
+	public String routine_Output_Excel(
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date_Like")String date_Like,
+			HttpServletResponse httpServletResponse,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Output/Excel\")開始");
+		String message = careRecordService.routine_Output_Excel(user_id, date_Like, httpServletResponse);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Output/Excel\")終了");
+		return "redirect:/CareRecord/RoutineReport?user_id=" + user_id + "&date_Like=" + date_Like;
+	}
+
+	@PostMapping("/RoutineDate")
+	public String routineDate(
+			@RequestParam("date")String date,
+			@RequestParam("url")String url,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/RoutineDate\")開始 " + date);
+		add_View_Data_(model, "routineDate", "日付変更");
+		model.addAttribute("date", date);
+		model.addAttribute("url", url);
+		model.addAttribute("year", careRecordService.year(date));
+		model.addAttribute("month_day", careRecordService.month_day(date));
+		model.addAttribute("options", careRecordService.options());
+		careRecordService.__consoleOut__("@GetMapping(\"/RoutineDate\")終了");
+		return "view";
+	}
+
+	@PostMapping("/RoutineReport")
+	public String routineReport(
+			@RequestParam("user_id")String user_id,
+			@RequestParam("date_Like")String date_Like) {
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineReport\")開始");
+		if(date_Like == "0") date_Like = careRecordService.this_Month();
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineReport\")終了");
+		return "redirect:/CareRecord/RoutineReport?user_id=" + user_id + "&date_Like=" + date_Like;
+	}
+
+	@GetMapping("/RoutineReport")
+	public String routineReport(
+			@Param("user_id")int user_id,
+			@Param("date_Like")String date_Like,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/RoutineReport\")開始");
+		add_View_Data_(model, "routineReport", "定期入力情報印刷");
+		model.addAttribute("user_id", user_id);
+		model.addAttribute("date_Like", date_Like);
+		model.addAttribute("label_Set", LabelSet.routineReport_Set);
+		model.addAttribute("user", careRecordService.user(user_id));
+		model.addAttribute("user_List", careRecordService.user_List());
+		model.addAttribute("routine_Report", careRecordService.routine_Report(user_id, date_Like));
+		model.addAttribute("options", careRecordService.options());
+		careRecordService.__consoleOut__("@GetMapping(\"/RoutineReport\")終了");
+		return "view";
+	}
+
+	@PostMapping("/OfficeReport")
+	public String officeReport() {
+		careRecordService.__consoleOut__("@PostMapping(\"/OfficeReport\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/OfficeReport\")終了");
+		return "redirect:/CareRecord/RoutineReport";
+	}
+
+	@GetMapping("/OfficeReport")
+	public String officeReport(
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/OfficeReport\")開始");
+		add_View_Data_(model, "officeReport", "事業所情報印刷");
+		model.addAttribute("label_Set", LabelSet.officeReport_Set);
+		model.addAttribute("office_Report", careRecordService.office_Report());
+		careRecordService.__consoleOut__("@GetMapping(\"/OfficeReport\")終了");
+		return "view";
+	}
+
+	@PostMapping("/Office/Output/Excel")
+	public String office_Output_Excel(
+			HttpServletResponse httpServletResponse,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Office/Output/Excel\")開始");
+		String message = careRecordService.office_Output_Excel(httpServletResponse);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Office/Output/Excel\")終了");
+		return "redirect:/CareRecord/OfficeReport";
+	}
 
 	@PostMapping("/Routine")
 	public String routine(
@@ -611,7 +718,7 @@ public class CareRecordController {
 		model.addAttribute("routine", careRecordService.routine(id));
 		model.addAttribute("options", careRecordService.options());
 		model.addAttribute("todo_actions", careRecordService.todo_actions());
-		model.addAttribute("names", careRecordService.names());
+		model.addAttribute("names", careRecordService.user_Names());
 		careRecordService.__consoleOut__("@GetMapping(\"/Routine\")終了");
 		return "view";
 	}
@@ -625,10 +732,22 @@ public class CareRecordController {
 		model.addAttribute("date", date);
 		model.addAttribute("routine", careRecordService.new_Routine(date));
 		model.addAttribute("todo_actions", careRecordService.todo_actions());
-		model.addAttribute("names", careRecordService.names());
+		model.addAttribute("names", careRecordService.user_Names());
 		model.addAttribute("options", careRecordService.options());
 		careRecordService.__consoleOut__("@PostMapping(\"/RoutineInsert\")終了");
 		return "view";
+	}
+
+	@PostMapping("/Routine/Insert")
+	public String routine_insert(
+			@RequestParam("post_date")String date,
+			@ModelAttribute("routine")Routine routine,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Insert\")開始");
+		String message = careRecordService.routine_insert(routine);
+		redirectAttributes.addFlashAttribute("message", message);
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Insert\")終了");
+		return "redirect:/CareRecord/RoutineList?date=" + date;
 	}
 
 	@PostMapping("/RoutineAppend")
@@ -693,24 +812,12 @@ public class CareRecordController {
 		return "redirect:/CareRecord/RoutineList?date=" + date;
 	}
 
-	@PostMapping("/RoutineDate")
-	public String routineDate(
-			@RequestParam("date")String date,
-			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/RoutineDate\")開始");
-		add_View_Data_(model, "routineDate", "日付変更");
-		model.addAttribute("date", date);
-		model.addAttribute("options", careRecordService.options());
-		careRecordService.__consoleOut__("@GetMapping(\"/RoutineDate\")終了");
-		return "view";
-	}
-
 	@GetMapping("/Report")
 	public String report(
 			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/Report\")開始");
 		add_View_Data_(model, "report", "帳票印刷メニュー");
-		careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
+		careRecordService.__consoleOut__("@GetMapping(\"/Report\")終了");
 		return "view";
 	}
 
@@ -719,7 +826,7 @@ public class CareRecordController {
 				Model model) {
 			careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
 			add_View_Data_(model, "setting", "設定メニュー");
-			careRecordService.__consoleOut__("@GetMapping(\"/Setting\")開始");
+			careRecordService.__consoleOut__("@GetMapping(\"/Setting\")終了");
 			return "view";
 	}
 
@@ -735,11 +842,20 @@ public class CareRecordController {
 		return "view";
 	}
 
-	@PostMapping("/ToDoInsert")
+	@PostMapping("/ToDo/Insert")
 	public String todoInsert(
 			@ModelAttribute("todo")ToDo todo){
 		careRecordService.__consoleOut__("@PostMapping(\"/ToDoInsert\")開始");
-		careRecordService.todoSave(todo);
+		careRecordService.todo_Insert(todo);
+		careRecordService.__consoleOut__("@PostMapping(\"/ToDoInsert\")終了");
+		return "redirect:/CareRecord/ToDoSetting";
+	}
+
+	@PostMapping("/ToDo/Update")
+	public String todo_Update(
+			@ModelAttribute("todo")ToDo todo){
+		careRecordService.__consoleOut__("@PostMapping(\"/ToDoInsert\")開始");
+		careRecordService.todo_Update(todo);
 		careRecordService.__consoleOut__("@PostMapping(\"/ToDoInsert\")終了");
 		return "redirect:/CareRecord/ToDoSetting";
 	}

@@ -49,16 +49,19 @@
 							</td>
 							<td>
 								<select th:field="*{todo}">
+									<option value=""></option>
 									<option th:each="option : ${todo_actions}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>
 							<td>
 								<select th:field="*{room}">
+									<option value="">0</option>
 									<option th:each="option : ${options.room}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>
 							<td>
 								<select th:field="*{name}">
+								<option value=""></option>
 									<option th:each="option : ${names}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>

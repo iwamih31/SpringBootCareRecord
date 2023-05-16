@@ -1,7 +1,9 @@
 package com.iwamih31;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class OptionData {
 
@@ -12,10 +14,10 @@ public class OptionData {
   public static String[] name = names();
 
   // 日付
-  public static String[] date = dates();
+  public static String[] date = dates(40);
 
   // 時間
-  public static String[] time = times();
+  public static String[] time = times(0, 0, 5);
 
   // 睡眠
   public static String[] sleep = {"起床","臥床","傾眠"};
@@ -30,7 +32,7 @@ public class OptionData {
   public static String[] pee2 = {"パ交", "リ交", "ト有", "ト無", "ト未", "失禁", "拒否"};
 
   // 排便
-  public static String[] poop = {"普多", "普中", "普少", "軟多", "軟中", "軟少"};
+  public static String[] poop = {"普多", "普中", "普少", "軟多", "軟中", "軟少", "硬多", "硬中", "硬少"};
 
   // 下剤
   public static Integer[] laxative = nums(5, 20 , 1);
@@ -46,6 +48,15 @@ public class OptionData {
 
   // 利用状況
   public static String[] use = {"利用中", "利用終了"};
+
+  // 年/月
+  public static String[] year_month = year_month();
+
+  // 月/日
+  public static Integer[] year = nums(this_Year() - 50, this_Year() , 1);
+
+  // 月/日
+  public static ArrayList<String> month_day = month_day();
 
   // 介護度
   public static String[] level = {
@@ -72,14 +83,19 @@ public class OptionData {
 		return null;
 	}
 
-	/** 現在時刻の末尾を 0 または 5 に変換し、そこから5分ずつ減らした時刻の配列を作成 */
-	public static String[] times() {
-		// 現在日時を取得
-		LocalDateTime dateTime = LocalDateTime.now();
+	/** 開始時刻の末尾を 0 または 5 に変換し、そこから chopped_Minute 分ずつ増やした時刻の配列を作成 */
+	public static String[] times(int start_Hour, int start_Minute, int chopped_Minute) {
 		// 表示形式を指定
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		// 開始の 時刻 を設定
+		LocalDateTime dateTime = null;
+		try {
+			dateTime = LocalDateTime.now().with(LocalTime.of(start_Hour, start_Minute));
+		} catch (Exception e) {
+			dateTime = LocalDateTime.now().with(LocalTime.of(0, 0));
+		}
 		// 配列を作成し5分刻みの時刻を代入
-		String[] times = new String[6 * 2 * 24];
+		String[] times = new String[60 / chopped_Minute * 24];
 		for (int i = 0; i < times.length; i++) {
 			// フォーマット
 			String data = dateTimeFormatter.format(dateTime);
@@ -94,29 +110,47 @@ public class OptionData {
 			}
 			// 末尾を変換
 			times[i] = data.substring(0, data.length()-1) + minutesLast;
-			// dateTimeを5分減らす
-			dateTime = dateTime.minusMinutes(5);
+			// dateTimeを chopped_Minute 分増やす
+			dateTime = dateTime.plusMinutes(chopped_Minute);
 		}
 		return times;
 	}
 
-	public static String[] dates() {
+	public static String now() {
 		// 現在日時を取得
 		LocalDateTime dateTime = LocalDateTime.now();
 		// 表示形式を指定
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+		return dateTimeFormatter.format(dateTime);
+	}
+
+	public static int this_Year() {
+		// 現在日時を取得
+		LocalDateTime dateTime = LocalDateTime.now();
+		// 表示形式を指定
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy");
+		return Integer.parseInt(dateTimeFormatter.format(dateTime));
+	}
+
+	public static String[] dates(int years) {
+		// 現在日時を取得
+		LocalDateTime dateTime = LocalDateTime.now();
+		// dateTimeを years 年減らす
+		dateTime = dateTime.minusYears(years);
+		// 表示形式を指定
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-		// 配列を作成し今日から10年前迄の日付を代入
-		String[] data = new String[366 * 40];
+		// 配列を作成し今日から years 年前迄の日付を代入
+		String[] data = new String[years * 366];
 		for (int i = 0; i < data.length; i++) {
 			// フォーマット
 			data[i] = dateTimeFormatter.format(dateTime);
-			// dateTimeを1日減らす
-			dateTime = dateTime.minusDays(1);
+			// dateTimeを1日増やす
+			dateTime = dateTime.plusDays(1);
 		}
 		return data;
 	}
 
-	public static Integer[] days(String month) {
+	public static String[] days(String month) {
 		int lastDay = 31;
 		switch(month) {
 			case "2":
@@ -130,20 +164,49 @@ public class OptionData {
 				break;
 		}
 		Integer[] days = nums(1, lastDay, 1);
-		return days;
+		return arrayAlignment(days, 2, "0");
 	}
 
-	public static Integer[] month() {
+	public static String[] month() {
 		// 1から12の配列を作成
 		Integer[] month = nums(1, 12, 1);
-		return month;
+		// 配列の中身の文字数を2文字に揃えて返す
+		return arrayAlignment(month, 2, "0") ;
 	}
 
-  /** String date の年数部分から end までを代入した配列を作成 */
-	public static Integer[] years(String date, int end, int add) {
-		int year = Integer.parseInt(date.split("/")[0]);
-		Integer[] years = nums(year, end, add);
-		return years;
+	/** String date の年数部分から end まで add づつ増やした年数を 代入した配列を作成 */
+	public static String[] years(String date, int end_year, int add) {
+		int year = Integer.parseInt(date.split("/")[0].split("_")[0].split("年")[0]);
+		Integer[] years = nums(year, end_year, add);
+		return arrayAlignment(years, 4, "0");
+	}
+
+	public static String[] year_month() {
+		// 現在日時を取得
+		LocalDateTime dateTime = LocalDateTime.now();
+		// 表示形式を指定
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM");
+		// 配列を作成し今日から10年前迄の [年/月] を代入
+		String[] data = new String[10 * 12];
+		for (int i = 0; i < data.length; i++) {
+			// フォーマット
+			data[i] = dateTimeFormatter.format(dateTime);
+			// dateTimeを1月減らす
+			dateTime = dateTime.minusMonths(1);
+		}
+		return data;
+	}
+
+	private static ArrayList<String> month_day() {
+		ArrayList<String> monthDay = new ArrayList<String>();
+		String[] month = month();
+		for (String mon : month) {
+			String[] days = days(mon);
+			for (String day : days) {
+				monthDay.add(mon + "/" + day);
+			}
+		}
+		return monthDay;
 	}
 
 	/** 配列の中身を同じ文字数に揃える */

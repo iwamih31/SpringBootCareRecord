@@ -42,8 +42,21 @@ nav button, .btn {
 	display: flex;
 }
 
+
+.fixed {
+	position: fixed;
+}
+
+.relative {
+	position: relative;
+}
+
 .margin_1em {
 	margin: 1em;
+}
+
+.margin_02 {
+	margin: 0.2em;
 }
 
 .text-align-center {

@@ -14,12 +14,6 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex">
-				<form id="detail" method="post" th:action="@{/CareRecord/DetailSetting}">
-					<input type="hidden" name="id" th:value="${id}" />
-					<button form="detail" type="submit" class="btn btn-primary button-detail">
-						詳細情報設定
-					</button>
-				</form>
 			</div>
 			<form id="user_update" method="post" th:action="@{/CareRecord/Office/Update}" class="form_record" th:object="${office}">
 				<input type="hidden" name= "post_id" th:value="*{id}"/>

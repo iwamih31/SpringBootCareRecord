@@ -22,7 +22,6 @@
 						詳細情報表示
 					</button>
 				</form>
-				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
 			<div class="flex margin_1em">
 				<div class="date">[[${date}]]</div>
@@ -33,6 +32,7 @@
 						日付変更
 					</button>
 				</form>
+				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
 			<form id="insert" method="post" th:action="@{/CareRecord/Action/Insert}" class="form_record" th:object="${action}">
 				<input type="hidden" name="date" th:value="${date}" />
@@ -57,7 +57,10 @@
 						<tr>
 							<td>
 								<select th:field="*{time}">
-									<option th:each="option : ${options.time}" th:value="${option}">[[${option}]]</option>
+									<option th:each="option : ${options.time}" th:value="${option}"
+										th:selected="${part_time == option}">
+										[[${option}]]
+									</option>
 								</select>
 							</td>
 							<td>
