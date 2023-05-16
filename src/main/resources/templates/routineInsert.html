@@ -14,15 +14,13 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex margin_1em">
-				<form id="selectDate" method="post" th:action="@{/CareRecord/Routine_Insert}">
-					<button form="selectDate" type="submit" class="btn btn-primary parts">
-						登録
-					</button>
-				</form>
+				<button form="insert" type="submit" class="btn btn-primary parts">
+					登録
+				</button>
 				<div th:if="${message}" class="alert arert-success">[[${message}]]</div>
 			</div>
-			<form id="insert" method="post" th:action="@{/CareRecord/User/Insert}" class="form_record" th:object="${routine}">
-				<input type="hidden" name= "post_id" th:value="${id}"/>
+			<form id="insert" method="post" th:action="@{/CareRecord/Routine/Insert}" class="form_record" th:object="${routine}">
+				<input type="hidden" name= "post_date" th:value="${date}"/>
 				<table class="table table-striped table-bordered table-hover table-form">
 					<thead class="thead-light">
 						<tr>
@@ -48,16 +46,19 @@
 							</td>
 							<td>
 								<select th:field="*{todo}">
+									<option value=""></option>
 									<option th:each="option : ${todo_actions}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>
 							<td>
 								<select th:field="*{room}">
+									<option value="0">0</option>
 									<option th:each="option : ${options.room}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>
 							<td>
 								<select th:field="*{name}">
+									<option value=""></option>
 									<option th:each="option : ${names}" th:value="${option}">[[${option}]]</option>
 								</select>
 							</td>

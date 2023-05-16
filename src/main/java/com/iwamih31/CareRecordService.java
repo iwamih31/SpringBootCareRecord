@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -49,7 +50,7 @@ public class CareRecordService {
 		return userRepository.findAll();
 	}
 
-	public List<User> userList() {
+	public List<User> user_List() {
 		return userRepository.userList();
 	}
 
@@ -109,20 +110,6 @@ public class CareRecordService {
 		return message;
 	}
 
-	public String office_Insert(Office office, int id) {
-		__consoleOut__("office_Insert開始");
-		office.setId(id);
-		String message = "ID = " + office.getId() + " の事業所データ";
-		try {
-			officeRepository.save(office);
-			message += " を登録しました";
-		} catch (Exception e) {
-			message += "登録に失敗しました " + e.getMessage();
-		}
-		__consoleOut__("office_Insert終了");
-		return message;
-	}
-
 	public String user_Update(User user, int id) {
 		__consoleOut__("user_Update開始");
 		user.setId(id);
@@ -153,6 +140,19 @@ public class CareRecordService {
 		return message;
 	}
 
+	public String todo_Update(ToDo todo) {
+		__consoleOut__("todo_Update開始");
+		String message = null;
+		try {
+			todo = todoRepository.save(todo);
+			message = "ID = " + todo.getId() + " のToDoデータを更新しました";
+		} catch (Exception e) {
+			message += "ToDoデータの更新に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("todo_Update終了");
+		return message;
+	}
+
 	public Object action(int id) {
 		return actionRepository.getReferenceById(id);
 	}
@@ -163,6 +163,135 @@ public class CareRecordService {
 
 	public List<Action> actionAll() {
 		return actionRepository.findAll();
+	}
+
+	public  List<Action> action_List(int user_id, String date_Like) {
+		List<Action> action_List;
+		if (user_id > 0) {
+			action_List = actionRepository.action_List(user_id, date_Like);
+		} else {
+			action_List = actionRepository.action_List_All(date_Like);
+		}
+		return action_List;
+	}
+
+	/** 常時入力データをExcelとして出力 */
+		public String action_Output_Excel(int user_id, String date_Like, HttpServletResponse response) {
+			__consoleOut__("action_Output_Excel(int user_Id, String date_Like, HttpServletResponse response) 開始" + user_id + date_Like);
+			String name_Head = "常時入力";
+			String file_Name = with_Now(name_Head) + ".xlsx";
+			String sheet_Name = with_Now(name_Head);
+			String message = file_Name + " のダウンロード";
+			Set[] label_Set = LabelSet.action_Set;
+			try (Workbook workbook = new XSSFWorkbook();
+					OutputStream outputStream = response.getOutputStream()){
+				Sheet sheet = workbook.createSheet(sheet_Name);
+				// ヘッダー行
+				Row row = sheet.createRow(0);
+				for (int i = 0; i < label_Set.length; i++) {
+					Cell cell = row.createCell(i);
+					cell.setCellValue(label_Set[i].name);
+					// セルスタイルを定義
+					CellStyle cellStyle = workbook.createCellStyle();
+					// 色指定
+					cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+					cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+					// 罫線指定
+					cellStyle.setBorderTop(BorderStyle.THIN);
+					cellStyle.setBorderBottom(BorderStyle.THIN);
+					cellStyle.setBorderLeft(BorderStyle.THIN);
+					cellStyle.setBorderRight(BorderStyle.THIN);
+					// 中央揃え
+					cellStyle.setAlignment(HorizontalAlignment.CENTER);
+					// フォントを指定
+					Font font = workbook.createFont();
+					font.setFontName("游ゴシック");
+					cellStyle.setFont(font);
+					// セルにセルスタイルを適用
+					cell.setCellStyle(cellStyle);
+					// 列幅設定（1文字分の横幅 × 文字数 ＋ 微調整分の幅）
+					sheet.setColumnWidth(i, 512 * label_Set[i].width + 0);
+				}
+				// データ行
+				List<Action> action_List = action_List(user_id, date_Like);
+				for (int i = 0; i < action_List.size(); i++) {
+					Action action = action_List.get(i);
+					User user = user(action.getUser_id());
+					String[] value = {
+							String.valueOf(action.getId()),
+							String.valueOf(user.getRoom()),
+							user.getName(),
+							action.getDate(),
+							action.getTime(),
+							action.getSleep(),
+							action.getWater(),
+							action.getPee1(),
+							action.getPee2(),
+							action.getPoop(),
+							action.getLaxative(),
+							action.getMedicine(),
+							action.getOintment(),
+							action.getSituation(),
+					};
+					// 行を指定
+					row = sheet.createRow(i + 1);
+					for (int j = 0; j < value.length; j++) {
+						// セルを指定
+						Cell cell = row.createCell(j);
+						// セルに値をセット
+						if(is_Double(value[j])){
+							cell.setCellValue(Double.parseDouble(value[j]));
+						} else {
+							cell.setCellValue(value[j].toString());
+						}
+						// セルスタイルを定義
+						CellStyle cellStyle = workbook.createCellStyle();
+						// 罫線指定
+						cellStyle.setBorderTop(BorderStyle.THIN);
+						cellStyle.setBorderBottom(BorderStyle.THIN);
+						cellStyle.setBorderLeft(BorderStyle.THIN);
+						cellStyle.setBorderRight(BorderStyle.THIN);
+						// フォントを指定
+						Font font = workbook.createFont();
+						font.setFontName("游ゴシック");
+						cellStyle.setFont(font);
+						// セルにセルスタイルを適用
+						cell.setCellStyle(cellStyle);
+						// 最後の行のみ
+						if (i == action_List.size() - 1) {
+							// 列幅設定（オート）
+							sheet.autoSizeColumn(j);
+						}
+					}
+
+				}
+				// ファイル名を指定して保存
+				String encodedFilename = URLEncoder.encode(file_Name, "UTF-8");
+				response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	//	    response.setHeader("Content-Disposition", "attachment;filename*=\"UTF-8' " + encodedFilename + "\"");
+				response.setHeader("Content-Disposition", "attachment;filename=\"" + encodedFilename + "\"");
+				response.setCharacterEncoding("UTF-8");
+				workbook.write(outputStream);
+				message = "が完了しました";
+				workbook.close();
+				message += " workbook を close() しました";
+			} catch (IOException e) {
+				message = "が正常に完了出来ませんでした";
+				__consoleOut__(e.getMessage());
+			}
+			__consoleOut__("action_Output_Excel(int user_Id, String date_Like, HttpServletResponse response) 終了");
+			return message;
+		}
+
+	private boolean is_Double(String string) {
+		boolean is_Double = true;
+		try {
+			__consoleOut__("String = " + Double.parseDouble(string) + " は Double に変換出来ます");
+		} catch (Exception e) {
+			__consoleOut__("string = " + string + " は Double に変換出来ません");
+			is_Double = false;
+		}
+		return is_Double;
 	}
 
 	private Integer actionNextID() {
@@ -228,8 +357,26 @@ public class CareRecordService {
 		return detail;
 	}
 
-public  List<Detail> detailAll() {
-		return detailRepository.findAll();
+	public  List<Detail> detail_All() {
+			return detailRepository.findAll();
+		}
+
+	public String this_Month() {
+		// 今日の日付を取得
+		LocalDateTime now = LocalDateTime.now();
+		// 表示形式を指定
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM");
+		return dateTimeFormatter.format(now);
+	}
+
+	public String last_Month() {
+		// 今日の日付を取得
+			LocalDateTime now = LocalDateTime.now();
+		// 1つ前の月に変換
+		LocalDateTime last_Month_Now = now.minusMonths(1);
+		// 表示形式を指定
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM");
+		return dateTimeFormatter.format(last_Month_Now);
 	}
 
 	public String detail_Update(Detail detail, int id) {
@@ -283,7 +430,7 @@ public  List<Detail> detailAll() {
 	public void setRoutineList(String date) {
 		List<ToDo> todoList = todoList();
 		for (ToDo todo : todoList) {
-			List<User> userList = userList();
+			List<User> userList = user_List();
 			for (User user : userList) {
 				List<Routine> routineAll = routine_All();
 				int lastRoutineID = 0;
@@ -336,18 +483,35 @@ public  List<Detail> detailAll() {
 		return dateTimeFormatter.format(now);
 	}
 
+	/** 現在時刻 */
 	public String time() {
 		// 現在時刻を取得
 		LocalDateTime now = LocalDateTime.now();
 		// 表示形式を指定
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-		String time = dateTimeFormatter.format(now);
-		//末尾を0に変換して返す
-		return time.substring(0, time.length()-1) + 0;
+		return dateTimeFormatter.format(now);
 	}
 
-	public Integer[] dateOptions(int count, String input) {
-		Integer[] options = null;
+	/** 現在時刻（5分刻み） */
+	public String part_time() {
+		String time = time();
+		// 末尾を 0 または 5 に変換して time に代入
+		// time の1の位を取得
+		String minutesLast = time.substring(time.length()-1, time.length());
+		// 0 にするか 5 にするか判定
+		if (Integer.parseInt(minutesLast) < 5) {
+			minutesLast = "0";
+		} else {
+			minutesLast = "5";
+		}
+		// 末尾を変換
+		time = time.substring(0, time.length()-1) + minutesLast;
+		__consoleOut__("part_time = " + time);
+		return time;
+	}
+
+	public String[] dateOptions(int count, String input) {
+		String[] options = null;
 		switch(count) {
 			case 1:
 				options = OptionData.years(today(), 1900, -1);
@@ -475,21 +639,24 @@ public  List<Detail> detailAll() {
 		detailRepository.save(detail);
 	}
 
-	public void todoSave(ToDo todo) {
+	public void todo_Insert(ToDo todo) {
 		todoRepository.save(todo);
-
 	}
 
-	public String[] names() {
+	public String[] user_Names() {
 		return userRepository.names();
 	}
 
 	public  List<ToDo> todoList() {
-		return todoRepository.findAll();
+		return todoRepository.todoList();
 	}
 
 	public Object todo(int id) {
 		return todoRepository.getReferenceById(id);
+	}
+
+	public String[] todo_actions() {
+		return todoRepository.actions();
 	}
 
 	public String routineUpdate(Routine routine, int id) {
@@ -509,7 +676,7 @@ public  List<Detail> detailAll() {
 	}
 
 	public List<Integer> blankRooms() {
-		List<Integer> blankRooms = new ArrayList<Integer>();
+		List<Integer> blankRooms = new ArrayList<>();
 		List<User> userList = userRepository.userList();
 		Integer[] roomNumbers = OptionData.room;
 		for (Integer roomNumber : roomNumbers) {
@@ -568,8 +735,14 @@ public  List<Detail> detailAll() {
 		return  new Office(next_Office_Id(),"","" );
 	}
 
-	public Object new_Event() {
+	public Event new_Event() {
 		return new Event(next_Event_Id(), "", null, "");
+	}
+
+	public Object new_Action() {
+		Action action = new Action();
+		action.setTime(part_time());
+		return action;
 	}
 
 	private void set_Office() {
@@ -586,10 +759,6 @@ public  List<Detail> detailAll() {
 			lastElement = list.get(lastIdx);
 		}
 		return lastElement;
-	}
-
-	public String[] todo_actions() {
-		return todoRepository.actions();
 	}
 
 	public void routine_Append(int id, String date) {
@@ -698,6 +867,20 @@ public  List<Detail> detailAll() {
 		return item_Names;
 	}
 
+	public String office_Insert(Office office, int id) {
+		__consoleOut__("office_Insert開始");
+		office.setId(id);
+		String message = "ID = " + office.getId() + " の事業所データ";
+		try {
+			officeRepository.save(office);
+			message += " を登録しました";
+		} catch (Exception e) {
+			message += "登録に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("office_Insert終了");
+		return message;
+	}
+
 	public Object date(String date) {
 		if (date == null) date = today();
 		return date;
@@ -771,7 +954,7 @@ public  List<Detail> detailAll() {
 			}
 			// データ行
 			List<User> userList = user_All();
-			List<Detail> detailList = detailAll();
+			List<Detail> detailList = detail_All();
 			for (int i = 0; i < userList.size(); i++) {
 				User user = userList.get(i);
 				Detail detail = detailList.get(i);
@@ -800,6 +983,30 @@ public  List<Detail> detailAll() {
 		}
 		__consoleOut__("detail_Output_Excel(HttpServletResponse response) 終了");
 		return message;
+	}
+
+	public String routine_insert(Routine routine) {
+		__consoleOut__("routineUpdate開始");
+		String data = "定期入力データ";
+		String message = null;
+		try {
+			routine = routineRepository.save(routine);
+			message = "ID = " + routine.getId() + " の" + data + "を更新しました";
+		} catch (Exception e) {
+			message = data + "の登録に失敗しました " + e.getMessage();
+		}
+		__consoleOut__("routineUpdate終了");
+		return message;
+	}
+
+	public int year(String date) {
+		return Integer.parseInt(date.split("/")[0].split("_")[0].split("年")[0]);
+	}
+
+	public String month_day(String date) {
+		String month_day = date.split("/")[1] + "/" + date.split("/")[2];
+		__consoleOut__(month_day);
+		return month_day;
 	}
 
 }

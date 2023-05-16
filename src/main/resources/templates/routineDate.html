@@ -15,9 +15,15 @@
 		<div>
 			<div class="flex margin_1em">
 				<form method="post" th:action="@{/CareRecord/RoutineList}">
-					<label for="date">日付選択</label>
-					<select name="date" >
-						<option th:each="option : ${options.date}" th:value="${option}" th:selected="${option == date}">
+					<label>日付選択</label>
+					<select name="year">
+						<option th:each="option : ${options.year}" th:value="${option}" th:selected="${option} == ${year}">
+							[[${option}]]
+						</option>
+					</select>
+					/
+					<select name="month_day">
+						<option th:each="option : ${options.month_day}" th:value="${option}" th:selected="${option} == ${month_day}">
 							[[${option}]]
 						</option>
 					</select>
