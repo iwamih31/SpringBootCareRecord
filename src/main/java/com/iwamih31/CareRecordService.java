@@ -546,7 +546,7 @@ public class CareRecordService {
 			eventRepository.save(event);
 			message += "を更新しました";
 		} catch (Exception e) {
-			message += "登録に失敗しました " + e.getMessage();
+			message += "更新に失敗しました " + e.getMessage();
 		}
 		__consoleOut__("event_Update終了");
 		return message;
@@ -1164,7 +1164,7 @@ public class CareRecordService {
 	}
 
 	public int year(String date) {
-		return Integer.parseInt(date.split("/")[0].split("_")[0].split("年")[0]);
+		return Integer.parseInt(date.split("/")[0].split("-")[0].split("年")[0]);
 	}
 
 	public String month_day(String date) {
