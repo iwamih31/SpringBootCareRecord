@@ -552,7 +552,7 @@ public class CareRecordController {
 				+ "?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
 	}
 
-	@PostMapping("Detail/Move_in/Update")
+	@PostMapping("/Detail/Move_in/Update")
 	public String detail_Move_in_Update(
 			@RequestParam("id")int id) {
 		careRecordService.__consoleOut__("@PostMapping(\"/Detail/Move_in/Update\")開始");
@@ -893,6 +893,10 @@ public class CareRecordController {
 			@RequestParam("input")String input) {
 		careRecordService.__consoleOut__("@PostMapping(\"/Birthday\")開始");
 		careRecordService.__consoleOut__("@PostMapping(\"/Birthday\")終了");
+		if (input.equals("")) {
+			careRecordService.birthday_Update(id, "");
+			return "redirect:/CareRecord/UserUpdate?id=" + id;
+		}
 		return "redirect:/CareRecord/Birthday?id=" + id + "&count=" + count + "&string=" + string + "&input=" + input;
 	}
 
@@ -905,8 +909,9 @@ public class CareRecordController {
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/Birthday\")開始");
 		careRecordService.__consoleOut__("string = " + careRecordService.dateStringConnect(count, string, input));
-		add_View_Data_(model, "birthday", "誕生日登録");
-		model.addAttribute("user", careRecordService.user(id));
+		String user_Name = careRecordService.user_Name(id);
+		add_View_Data_(model, "input", user_Name + " 様の誕生" + careRecordService.date_Input_Stage(count));
+		model.addAttribute("id", id);
 		model.addAttribute("count", count + 1);
 		model.addAttribute("label", careRecordService.dateInputLabel(count, "生まれた"));
 		model.addAttribute("string", careRecordService.dateStringConnect(count, string, input));
@@ -916,30 +921,6 @@ public class CareRecordController {
 		careRecordService.__consoleOut__(url);
 		careRecordService.__consoleOut__("@GetMapping(\"/Birthday\")" + count + "終了");
 		return "view";
-	}
-
-	@PostMapping("/Birthday/Update")
-	public String birthday_Update(
-			@RequestParam("id")int id,
-			@RequestParam("count")int count,
-			@RequestParam("string")String string,
-			@RequestParam("input")String input) {
-		careRecordService.__consoleOut__("@PostMapping(\"/Birthday/Update\")開始");
-		careRecordService.__consoleOut__("count = " + count);
-		careRecordService.birthday_Update(id, string, input);
-		careRecordService.__consoleOut__("@PostMapping(\"/Birthday/Update\")終了");
-		return "redirect:/CareRecord/UserUpdate?id=" + id;
-	}
-
-	@PostMapping("/Move_in")
-	public String move_in(
-			@RequestParam("id")int id,
-			@RequestParam("count")int count,
-			@RequestParam("string")String string,
-			@RequestParam("input")String input) {
-		careRecordService.__consoleOut__("@PostMapping(\"/Move_in\")開始");
-		careRecordService.__consoleOut__("@PostMapping(\"/Move_in\")終了");
-		return "redirect:/CareRecord/Move_in?id=" + id + "&count=" + count + "&string=" + string + "&input=" + input;
 	}
 
 	@GetMapping("/Move_in")
@@ -962,6 +943,70 @@ public class CareRecordController {
 		careRecordService.__consoleOut__(url);
 		careRecordService.__consoleOut__("@GetMapping(\"/Move_in\")" + count + "終了");
 		return "view";
+	}
+
+	@PostMapping("/Birthday/Update")
+	public String birthday_Update(
+			@RequestParam("id")int id,
+			@RequestParam("count")int count,
+			@RequestParam("string")String string,
+			@RequestParam("input")String input) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Birthday/Update\")開始");
+		careRecordService.__consoleOut__("count = " + count);
+		careRecordService.birthday_Update(id, string, input);
+		careRecordService.__consoleOut__("@PostMapping(\"/Birthday/Update\")終了");
+		return "redirect:/CareRecord/UserUpdate?id=" + id;
+	}
+
+	@PostMapping("/Level")
+	public String level(
+			@RequestParam("id")int id,
+			@RequestParam("level")String level,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Level\")開始");
+		redirectAttributes.addFlashAttribute("level", level);
+		careRecordService.__consoleOut__("@PostMapping(\"/Level\")終了");
+		return "redirect:/CareRecord/Level?id=" + id ;
+	}
+
+	@GetMapping("/Level")
+	public String level(
+			@Param("id")int id,
+			@Param("level")String level,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/Level\")開始");
+		add_View_Data_(model, "level", "介護度選択");
+		model.addAttribute("id", id);
+		model.addAttribute("level", level);
+		model.addAttribute("label", "介護度を選択して下さい");
+		model.addAttribute("options", OptionData.level);
+		careRecordService.__consoleOut__("@GetMapping(\"/Level\")終了");
+		return "view";
+	}
+
+	@PostMapping("/Level/Update")
+	public String level_Update(
+			@RequestParam("id")int id,
+			@RequestParam("level")String level) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Level/Update\")開始");
+		careRecordService.level_Update(id, level);
+		careRecordService.__consoleOut__("@PostMapping(\"/Level/Update\")終了");
+		return "redirect:/CareRecord/UserUpdate?id=" + id;
+	}
+
+	@PostMapping("/Move_in")
+	public String move_in(
+			@RequestParam("id")int id,
+			@RequestParam("count")int count,
+			@RequestParam("string")String string,
+			@RequestParam("input")String input) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Move_in\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/Move_in\")終了");
+		if (input.equals("")) {
+			careRecordService.move_in_Update(id, "");
+			return "redirect:/CareRecord/UserUpdate?id=" + id;
+		}
+		return "redirect:/CareRecord/Move_in?id=" + id + "&count=" + count + "&string=" + string + "&input=" + input;
 	}
 
 	@PostMapping("/Move_in/Update")

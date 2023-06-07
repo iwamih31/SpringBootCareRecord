@@ -752,6 +752,45 @@ public class CareRecordService {
 		detailRepository.save(detail);
 	}
 
+	public void birthday_Update(int id, String birthday) {
+		Detail detail;
+		// idが在れば birthday を書き換え 無ければ birthday 入りの detail を新規作成
+		if (detailRepository.existsById(id)) {
+			detail = detailRepository.getReferenceById(id);
+			detail.setBirthday(birthday);
+		} else {
+			detail = new Detail(id, birthday, "", "");
+		}
+		// save() 実行
+		detailRepository.save(detail);
+	}
+
+	public void level_Update(int id, String level) {
+		Detail detail;
+	// idが在れば level を書き換え 無ければ level 入りの detail を新規作成
+		if (detailRepository.existsById(id)) {
+			detail = detailRepository.getReferenceById(id);
+			detail.setLevel(level);
+		} else {
+			detail = new Detail(id, "" ,level , "");
+		}
+		// save() 実行
+		detailRepository.save(detail);
+	}
+
+	public void move_in_Update(int id, String move_in) {
+		Detail detail;
+		// idが在れば move_in を書き換え 無ければ move_in 入りの detail を新規作成
+		if (detailRepository.existsById(id)) {
+			detail = detailRepository.getReferenceById(id);
+			detail.setMove_in(move_in);
+		} else {
+			detail = new Detail(id, "", "", move_in);
+		}
+		// save() 実行
+		detailRepository.save(detail);
+	}
+
 	public void move_in_Update(int id, String string, String input) {
 		// 文字数が 2 になる様に input の前を "0" で埋める
 		input = stringAlignment(input, 2, "0");
@@ -1171,6 +1210,11 @@ public class CareRecordService {
 		String month_day = date.split("/")[1] + "/" + date.split("/")[2];
 		__consoleOut__(month_day);
 		return month_day;
+	}
+
+	public String user_Name(int id) {
+		User user = user(id);
+		return user.getRoom() + " " + user.getName();
 	}
 
 }

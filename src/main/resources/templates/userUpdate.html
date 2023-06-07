@@ -49,66 +49,64 @@
 							</td>
 							<td>
 								<button form="user_update" class="btn btn-primary" type="submit">
-									更新
+									基本情報更新
 								</button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</form>
-			<div class="text-align-center">
-				<form id="birthday_Update" method="post" th:action="@{/CareRecord/Detail/Birthday/Update}">
-					<input type="hidden" name="id" th:value="${id}" />
-				</form>
-				<form id="move_in_Update" method="post" th:action="@{/CareRecord/Detail/Move_in/Update}">
-					<input type="hidden" name="id" th:value="${id}" />
-				</form>
-				<form id="detail_Update" method="post" th:action="@{/CareRecord/Detail/Update}" class="form_detail" th:object="${detail}">
-					<input type="hidden" name= "id" th:value="${id}"/>
-					<table class="detail">
-						<tr>
-							<td>
-								● 誕生日：[[*{birthday}]]
-							</td>
-							<td>
-								➡
+			<div class="text-align-center" th:object="${detail}">
+				<div class="font-size-x-large">
+					詳細情報
+				</div>
+				<table class="detail">
+					<tr>
+						<td>
+							● 誕生日：
+						</td>
+						<td>
+							<form id="birthday_Update" method="post" th:action="@{/CareRecord/Detail/Birthday/Update}">
+								<input type="hidden" name="id" th:value="${id}" />
 								<input type="hidden" th:field="*{birthday}"/>
 								<button form="birthday_Update" type="submit" class="keep_size bg_white button_Day_Input">
 									<th:block th:if="*{birthday} == ''">　　　　　　</th:block>
 									[[*{birthday}]]
 								</button>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								● 介護度：[[*{level}]]
-							</td>
-							<td>
-								➡
-								<select th:field="*{level}">
-									<option value=""></option>
-									<option th:each="option : ${options.level}" th:value="${option}">[[${option}]]</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								● 入居日：[[*{move_in}]]
-							</td>
-							<td>
-								➡
+							</form>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							● 介護度：
+						</td>
+						<td>
+							<form id="level_Update" method="post" th:action="@{/CareRecord/Level}">
+								<input type="hidden" name="id" th:value="${id}" />
+								<input type="hidden" th:field="*{level}"/>
+								<button form="level_Update" type="submit" class="keep_size bg_white button_Day_Input">
+									<th:block th:if="*{level} == ''">　　　　　　</th:block>
+									[[*{level}]]
+								</button>
+							</form>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							● 入居日：
+						</td>
+						<td>
+							<form id="move_in_Update" method="post" th:action="@{/CareRecord/Detail/Move_in/Update}">
+								<input type="hidden" name="id" th:value="${id}" />
 								<input type="hidden" th:field="*{move_in}"/>
 								<button form="move_in_Update" type="submit" class="keep_size bg_white button_Day_Input">
 									<th:block th:if="*{move_in} == ''">　　　　　　</th:block>
 									[[*{move_in}]]
 								</button>
-							</td>
-						</tr>
-					</table>
-					<button form="detail_Update" type="submit" class="btn btn-primary button-detail">
-						詳細情報更新
-					</button>
-				</form>
+							</form>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<br>

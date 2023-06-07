@@ -14,18 +14,16 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="flex margin_1em">
-				<form id="input" method="post" th:action="@{${url}}">
-					<label for="input">[[${label}]]</label>
-					<select name="input" >
+				<form id="select" method="post" th:action="@{/CareRecord/Level/Update}">
+					<input type="hidden" name="id" th:value="${id}" />
+					<label for="level">[[${label}]]</label>
+					<select name="level">
 						<option value=""></option>
 						<option th:each="option : ${options}" th:value="${option}">
 							[[${option}]]
 						</option>
 					</select>
-					<input type="hidden" name="id" th:value="${id}" />
-					<input type="hidden" name="count" th:value="${count}" />
-					<input type="hidden" name="string" th:value="${string}" />
-					<button form="input" type="submit" class="btn btn-primary parts">
+					<button form="select" type="submit" class="btn btn-primary parts">
 						OK
 					</button>
 				</form>
