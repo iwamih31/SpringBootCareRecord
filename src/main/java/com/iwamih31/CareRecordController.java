@@ -57,9 +57,9 @@ public class CareRecordController {
 	public String user(
 			@Param("id")int id,
 			@Param("date")String date,
-
 			Model model) {
 		careRecordService.__consoleOut__("@GetMapping(\"/User\")開始");
+		if (date.equals("")) date = careRecordService.today();
 		add_View_Data_(model, "user", "常時入力");
 		model.addAttribute("id", id);
 		model.addAttribute("date", date);
@@ -885,6 +885,87 @@ public class CareRecordController {
 		return "view";
 	}
 
+//	@PostMapping("/ActionDate")
+//	public String actionDate(
+//			@RequestParam("id")int id,
+//			@RequestParam("date")String date,
+//			Model model) {
+//		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate\")開始");
+//		add_View_Data_(model, "actionDate", "日付変更");
+//		model.addAttribute("id", id);
+//		model.addAttribute("date", date);
+//		model.addAttribute("user", careRecordService.user(id));
+//		model.addAttribute("options", careRecordService.options());
+//		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate\")終了");
+//		return "view";
+//	}
+
+	@PostMapping("/ActionDate")
+	public String actionDate(
+			@RequestParam("id")int id
+			) {
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate\")開始");
+		String string = "";
+		String input = "";
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate\")終了");
+		return "redirect:/CareRecord/ActionDate/input"
+				+ "?id=" + id + "&count=" + 1 + "&string=" + string + "&input=" + input;
+	}
+
+	@PostMapping("/ActionDate/input")
+	public String actionDate_input(
+			@RequestParam("id")int id,
+			@RequestParam("count")int count,
+			@RequestParam("string")String string,
+			@RequestParam("input")String input) {
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate/input\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate/input\")終了");
+		if (input.equals("")) {
+			return "redirect:/CareRecord/User?id=" + id + "&date=";
+		}
+		return "redirect:/CareRecord/ActionDate/input?id=" + id + "&count=" + count + "&string=" + string + "&input=" + input;
+	}
+
+	@GetMapping("/ActionDate/input")
+	public String actionDate_input(
+			@Param("id")int id,
+			@Param("count")int count,
+			@Param("string")String string,
+			@Param("input")String input,
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionDate/input\")開始");
+		string = careRecordService.dateStringConnect(count, string, input);
+		careRecordService.__consoleOut__("string = " + string);
+		String user_Name = "部屋番号" + careRecordService.user_Name(id);
+		add_View_Data_(model, "input", user_Name + " 様の常時入力" + careRecordService.date_Input_Stage(count));
+		model.addAttribute("id", id);
+		model.addAttribute("count", count + 1);
+		model.addAttribute("label", careRecordService.dateInputLabel(count, "常時入力する"));
+		model.addAttribute("string", string);
+		model.addAttribute("options", careRecordService.dateOptions(count, input));
+		String url = careRecordService.dateInputUrl(count, 3, "/CareRecord/ActionDate/input", "/CareRecord/ActionDate/last");
+		model.addAttribute("url", url);
+		careRecordService.__consoleOut__(url);
+		careRecordService.__consoleOut__("@GetMapping(\"/ActionDate/input\")" + count + "終了");
+		return "view";
+	}
+
+
+	@PostMapping("/ActionDate/last")
+	public String ActionDate_last(
+			@RequestParam("id")int id,
+			@RequestParam("string")String string,
+			@RequestParam("input")String input) {
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate/last\")開始");
+		if (input.equals("")) {
+			careRecordService.__consoleOut__("@PostMapping(\"/ActionDate/last\")終了");
+			return "redirect:/CareRecord/User?id=" + id + "&date=";
+		}
+		String date = string + "/" + input;
+		careRecordService.__consoleOut__("@PostMapping(\"/ActionDate/last\")終了");
+		return "redirect:/CareRecord/User?id=" + id + "&date=" + date;
+	}
+
 	@PostMapping("/Birthday")
 	public String birthday(
 			@RequestParam("id")int id,
@@ -1020,21 +1101,6 @@ public class CareRecordController {
 		careRecordService.move_in_Update(id, string, input);
 		careRecordService.__consoleOut__("@PostMapping(\"/Move_in/Update\")終了");
 		return "redirect:/CareRecord/UserUpdate?id=" + id;
-	}
-
-	@PostMapping("/ActionDate")
-	public String actionDate(
-			@RequestParam("id")int id,
-			@RequestParam("date")String date,
-			Model model) {
-		careRecordService.__consoleOut__("@GetMapping(\"/ActionDate\")開始");
-		add_View_Data_(model, "actionDate", "日付変更");
-		model.addAttribute("id", id);
-		model.addAttribute("date", date);
-		model.addAttribute("user", careRecordService.user(id));
-		model.addAttribute("options", careRecordService.options());
-		careRecordService.__consoleOut__("@GetMapping(\"/ActionDate\")終了");
-		return "view";
 	}
 
 	/** view 表示に必要な属性データをモデルに登録 */

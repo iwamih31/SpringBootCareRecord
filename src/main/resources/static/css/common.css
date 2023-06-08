@@ -229,3 +229,19 @@ nav button, .btn {
 	margin: 1em
 }
 
+.table td {
+	padding: 0.3em !important;
+}
+
+.table td input,
+.table td select
+ {
+	margin-top: 0.3em !important;
+}
+
+.table td select
+ {
+	width: 100%;
+	padding: 0.15em !important;
+}
+

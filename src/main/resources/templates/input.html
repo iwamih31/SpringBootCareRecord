@@ -12,12 +12,12 @@
 			<h1 class="h2">[[${title}]]</h1>
 		</div>
 		<!--	一覧表示	-->
-		<div>
+		<div class="center">
 			<div class="flex margin_1em">
 				<form id="input" method="post" th:action="@{${url}}">
 					<label for="input">[[${label}]]</label>
 					<select name="input" >
-						<option value=""></option>
+						<option value="">選択</option>
 						<option th:each="option : ${options}" th:value="${option}">
 							[[${option}]]
 						</option>
