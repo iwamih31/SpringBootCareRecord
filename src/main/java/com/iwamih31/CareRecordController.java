@@ -778,6 +778,32 @@ public class CareRecordController {
 		return "view";
 	}
 
+	@PostMapping("/RoutineRemove")
+	public String routineRemove(
+			@RequestParam("date")String date,
+			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineAppend\")開始");
+		add_View_Data_(model, "routineRemove", "定期入力データ削除");
+		model.addAttribute("date", date);
+		model.addAttribute("userList", careRecordService.user_All());
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineAppend\")終了");
+		return "view";
+	}
+
+	@PostMapping("/RoutineRemoveConfirm")
+	public String routineRemoveConfirm(
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date")String date,
+			Model model) {
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineAppend\")開始");
+		add_View_Data_(model, "routineRemoveConfirm", "定期入力データ削除");
+		model.addAttribute("user_id", user_id);
+		model.addAttribute("date", date);
+		model.addAttribute("routine_List", careRecordService.routine_List(user_id, date));
+		careRecordService.__consoleOut__("@PostMapping(\"/RoutineAppend\")終了");
+		return "view";
+	}
+
 	@PostMapping("/RoutineUpdate")
 	public String routineUpdate(
 			@RequestParam("post_id")int id,
@@ -824,6 +850,18 @@ public class CareRecordController {
 			@RequestParam("date")String date) {
 		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Append\")開始");
 		careRecordService.routine_Append(id, date);
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Append\")終了");
+		return "redirect:/CareRecord/RoutineList?date=" + date;
+	}
+
+	@PostMapping("/Routine/Remove")
+	public String routine_Remove(
+			@RequestParam("user_id")int user_id,
+			@RequestParam("date")String date,
+			RedirectAttributes redirectAttributes) {
+		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Append\")開始");
+		String message = careRecordService.routine_Remove(user_id, date);
+		redirectAttributes.addFlashAttribute("message", message);
 		careRecordService.__consoleOut__("@PostMapping(\"/Routine/Append\")終了");
 		return "redirect:/CareRecord/RoutineList?date=" + date;
 	}

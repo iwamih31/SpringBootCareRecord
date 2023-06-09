@@ -1217,4 +1217,24 @@ public class CareRecordService {
 		return user.getRoom() + " " + user.getName();
 	}
 
+	List<Routine> routine_List(int user_id, String date) {
+		User user = user(user_id);
+		return routineRepository.routine_List(user.getRoom(), user.getName(), date);
+	}
+
+	public String routine_Remove(int user_id, String date) {
+		String message = "指定されたデータの削除";
+		try {
+			List<Routine> routine_List = routine_List(user_id, date);
+			for (Routine routine : routine_List) {
+				routineRepository.deleteById(routine.getId());
+			}
+			message += "が完了しました";
+		} catch (Exception e) {
+			message += "が正常に行われませんでした";
+			e.printStackTrace();
+		}
+		return message;
+	}
+
 }
