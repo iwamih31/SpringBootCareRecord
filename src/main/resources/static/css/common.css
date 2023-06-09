@@ -245,3 +245,14 @@ nav button, .btn {
 	padding: 0.15em !important;
 }
 
+.main {
+	background-image: url("/image/main.png");
+	background-size: 100%;
+	height: 40em;
+}
+
+.main button {
+	border-color: black;
+}
+
+

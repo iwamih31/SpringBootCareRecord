@@ -14,16 +14,16 @@
 		<!--	一覧表示	-->
 		<div>
 			<div class="center">
+				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
 				<div class="center">
 					<form id="detail" method="post" th:action="@{/CareRecord/User}">
 						<input type="hidden" name="id" th:value="${id}" />
 						<input type="hidden" name="date" th:value="${date}" />
 						<button form="detail" type="submit" class="btn btn-primary button-detail">
-							戻る
+							常時入力に戻る
 						</button>
 					</form>
 				</div>
-				<div class="user">部屋番号 [[${user.room}]] - [[${user.name}]] 様</div>
 			</div>
 			<th:block th:object="${detail}">
 				<table class="detail font-size-x-large">

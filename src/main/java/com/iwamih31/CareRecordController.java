@@ -23,6 +23,22 @@ public class CareRecordController {
 	@Autowired
 	private CareRecordService careRecordService;
 
+	@GetMapping("/")
+	public String index() {
+		careRecordService.__consoleOut__("@PostMapping(\"/\")開始");
+		careRecordService.__consoleOut__("@PostMapping(\"/\")終了");
+		return "redirect:/CareRecord/Main";
+	}
+
+	@GetMapping("/Main")
+	public String main(
+			Model model) {
+		careRecordService.__consoleOut__("@GetMapping(\"/Main\")開始");
+		model.addAttribute("title", "メイン画面");
+		careRecordService.__consoleOut__("@GetMapping(\"/Main\")終了");
+		return "main";
+	}
+
 	@GetMapping("/UserList")
 	public String userList(
 			Model model) {
